@@ -15,9 +15,26 @@ if "authenticated" not in st.session_state:
 
 if "login_attempts" not in st.session_state:
     st.session_state.login_attempts = 0
-    
+
 def verificar_contraseña():
     contraseña_ingresada = st.text_input("Introduce la contraseña:", type="password")
+
+    if st.button("Iniciar sesión"):
+        if st.session_state.login_attempts >= 3:
+            st.error("Has superado el número máximo de intentos. Acceso bloqueado.")
+        elif contraseña_ingresada == PASSWORD:  # Secretsから取得したパスワードで認証
+            st.session_state.authenticated = True
+            st.success("¡Autenticación exitosa! Marque otra vez el botón 'Iniciar sesión'.")
+        else:
+            st.session_state.login_attempts += 1
+            intentos_restantes = 3 - st.session_state.login_attempts
+            st.error(f"Contraseña incorrecta. Te quedan {intentos_restantes} intento(s).")
+        
+        if st.session_state.login_attempts >= 3:
+            st.error("Acceso bloqueado. Intenta más tarde.")
+
+if st.session_state.authenticated:
+    # 認証成功後に表示されるメインコンテンツ
     
     # Configuración de la página
     st.set_page_config(
