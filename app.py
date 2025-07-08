@@ -51,7 +51,7 @@ if st.session_state.authenticated:
     # Sidebar para selección del método
     st.sidebar.header("Seleccionar Método de Gestión")
     metodo = st.sidebar.selectbox(
-        "Escolha o método:",
+        "Sistema de compras:",
         ["Sistema de Cantidad Fija", "Sistema de Período Fijo"]
     )
     
