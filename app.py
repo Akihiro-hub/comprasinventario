@@ -8,7 +8,7 @@ import math
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Sistema de Gestión de Inventario",
+    page_title="Planificación de Compras para Inventario Apropiado",
     page_icon="📦",
     layout="wide",
     initial_sidebar_state="expanded"
