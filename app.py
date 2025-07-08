@@ -86,7 +86,7 @@ if metodo == "Sistema de Cantidad Fija":
             "Probabilidad aceptable de escasez de stock (%)",
             min_value=1,
             max_value=50,
-            value=1,
+            value=10,
             step=1,
             help="Porcentaje de probabilidad de quedarse sin stock que está dispuesto a aceptar"
         )
