@@ -75,7 +75,7 @@ def validar_inputs(**kwargs):
 # Sistema de Cantidad Fija
 if metodo == "Sistema de Cantidad Fija":
     st.header("📊 Sistema de Cantidad Fija")
-    st.markdown("Este sistema determina cuándo y cuánto pedir basándose en un punto de reorden fijo.")
+    st.markdown("Este sistema determina cuándo hacer el pedido según un nivel bajo de inventario.")
     
     # Inputs
     col1, col2 = st.columns(2)
