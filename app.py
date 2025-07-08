@@ -8,14 +8,14 @@ import math
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Planificación de Compras para Inventario Apropiado",
+    page_title="Sistema de Gestión de Inventario",
     page_icon="📦",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # Título principal
-st.title("📦 Sistema de Gestión de Inventario")
+st.title("📦 Planificación de Compras e Inventario")
 st.markdown("**Cálculo de inventario para sistemas de cantidad fija y período fijo**")
 
 # Sidebar para selección del método
