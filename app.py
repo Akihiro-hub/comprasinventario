@@ -140,7 +140,7 @@ if st.session_state.authenticated:
                 consumo_7_dias_atras = st.number_input(
                     "Volumen consumido hace 7 días",
                     min_value=0,
-                    value=21,
+                    value=10,
                     step=1,
                     key="fijo_7dias"
                 )
@@ -148,7 +148,7 @@ if st.session_state.authenticated:
                 consumo_6_dias_atras = st.number_input(
                     "Volumen consumido hace 6 días",
                     min_value=0,
-                    value=17,
+                    value=6,
                     step=1,
                     key="fijo_6dias"
                 )
@@ -156,7 +156,7 @@ if st.session_state.authenticated:
                 consumo_5_dias_atras = st.number_input(
                     "Volumen consumido hace 5 días",
                     min_value=0,
-                    value=20,
+                    value=17,
                     step=1,
                     key="fijo_5dias"
                 )
@@ -164,7 +164,7 @@ if st.session_state.authenticated:
                 consumo_4_dias_atras = st.number_input(
                     "Volumen consumido hace 4 días",
                     min_value=0,
-                    value=28,
+                    value=14,
                     step=1,
                     key="fijo_4dias"
                 )
@@ -173,7 +173,7 @@ if st.session_state.authenticated:
                 consumo_3_dias_atras = st.number_input(
                     "Volumen consumido hace 3 días",
                     min_value=0,
-                    value=16,
+                    value=10,
                     step=1,
                     key="fijo_3dias"
                 )
@@ -181,7 +181,7 @@ if st.session_state.authenticated:
                 consumo_2_dias_atras = st.number_input(
                     "Volumen consumido hace 2 días",
                     min_value=0,
-                    value=22,
+                    value=6,
                     step=1,
                     key="fijo_2dias"
                 )
@@ -189,7 +189,7 @@ if st.session_state.authenticated:
                 consumo_ayer = st.number_input(
                     "Volumen consumido ayer",
                     min_value=0,
-                    value=16,
+                    value=7,
                     step=1,
                     key="fijo_ayer"
                 )
