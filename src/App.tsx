@@ -55,7 +55,7 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
   const [attempts, setAttempts] = useState(0);
   const [error, setError] = useState('');
 
-  const correctPassword = 'inventory2024';
+  const correctPassword = 'edificar';
   const maxAttempts = 3;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -177,7 +177,7 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
         </form>
 
         <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
-          <p>Contraseña de demostración: inventory2024</p>
+          <p>Contraseña de demostración: edificar</p>
         </div>
       </div>
     </div>
