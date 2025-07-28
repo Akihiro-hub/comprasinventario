@@ -107,19 +107,19 @@ const InventoryProjectionChart: React.FC<InventoryProjectionChartProps> = ({
                 y={safetyStock} 
                 stroke="#f59e0b" 
                 strokeDasharray="5 5"
-                label={{ value: "安全在庫", position: "topRight" }}
+                label={{ value: "安全在庫", position: "insideTopRight" }}
               />
               <ReferenceLine 
                 x={leadTime + 1} 
                 stroke="#10b981" 
                 strokeDasharray="3 3"
-                label={{ value: "1回目到着", position: "topLeft" }}
+                label={{ value: "1回目到着", position: "insideTopLeft" }}
               />
               <ReferenceLine 
                 x={orderCycle + leadTime + 1} 
                 stroke="#2563eb" 
                 strokeDasharray="3 3"
-                label={{ value: "2回目到着", position: "topLeft" }}
+                label={{ value: "2回目到着", position: "insideTopLeft" }}
               />
             </LineChart>
           </ResponsiveContainer>
