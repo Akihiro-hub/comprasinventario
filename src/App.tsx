@@ -60,6 +60,36 @@ const SimpleLineChart: React.FC<{
   orderCycle?: number;
   isFixedPeriod?: boolean;
 }> = ({ data, reorderPoint, safetyStock, title, targetLevel, leadTime, orderCycle, isFixedPeriod = false }) => {
+  // 切りの良い数値を計算する関数
+  const calculateNiceNumbers = (maxValue: number) => {
+    // 最大値に基づいて適切な間隔を決定
+    let interval;
+    if (maxValue <= 50) {
+      interval = 10;
+    } else if (maxValue <= 100) {
+      interval = 20;
+    } else if (maxValue <= 200) {
+      interval = 50;
+    } else if (maxValue <= 500) {
+      interval = 100;
+    } else if (maxValue <= 1000) {
+      interval = 200;
+    } else {
+      interval = 500;
+    }
+    
+    // 最大値を間隔で割って切り上げ、再度間隔を掛けて切りの良い最大値を作成
+    const niceMax = Math.ceil(maxValue / interval) * interval;
+    
+    // Y軸のラベル値を生成（0から最大値まで5段階）
+    const labels = [];
+    for (let i = 0; i <= 5; i++) {
+      labels.push((niceMax * i) / 5);
+    }
+    
+    return { niceMax, labels };
+  };
+
   // レスポンシブ対応: 画面サイズに応じてサイズを調整
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const width = isMobile ? 350 : 800;
@@ -68,7 +98,8 @@ const SimpleLineChart: React.FC<{
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  const maxInventory = Math.max(...data.map(d => d.inventory), (targetLevel || reorderPoint) * 1.2);
+  const rawMaxInventory = Math.max(...data.map(d => d.inventory), (targetLevel || reorderPoint) * 1.2);
+  const { niceMax: maxInventory, labels: yAxisLabels } = calculateNiceNumbers(rawMaxInventory);
   const minInventory = 0;
 
   const xScale = (day: number) => (day / (data.length - 1)) * chartWidth;
@@ -102,29 +133,29 @@ const SimpleLineChart: React.FC<{
         <svg width={width} height={height} style={{ minWidth: isMobile ? '350px' : 'auto', height: 'auto' }}>
         <g transform={`translate(${margin.left}, ${margin.top})`}>
           {/* Grid lines */}
-          {[0, 1, 2, 3, 4, 5].map(i => (
+          {yAxisLabels.map((value, i) => (
             <line
               key={i}
               x1={-5}
-              y1={yScale(maxInventory * i / 5)}
+              y1={yScale(value)}
               x2={chartWidth + 5}
-              y2={yScale(maxInventory * i / 5)}
+              y2={yScale(value)}
               stroke="#f1f5f9"
               strokeWidth={1}
             />
           ))}
           
           {/* Y-axis labels */}
-          {[0, 1, 2, 3, 4, 5].map(i => (
+          {yAxisLabels.map((value, i) => (
             <text
               key={i}
               x={-10}
-              y={yScale(maxInventory * i / 5) + 4}
+              y={yScale(value) + 4}
               fill="#64748b"
               fontSize={fontSize}
               textAnchor="end"
             >
-              {Math.round(maxInventory * i / 5)}
+              {Math.round(value)}
             </text>
           ))}
           
