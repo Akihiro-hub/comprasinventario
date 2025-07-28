@@ -225,7 +225,7 @@ const DailyConsumptionInputs: React.FC<{
           Ingrese el volumen consumido para cada día:
         </p>
         
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div>
               <label style={labelStyle}>Volumen consumido hace 7 días</label>
@@ -422,10 +422,11 @@ const FixedQuantitySystem: React.FC = () => {
 
   const inputStyle = {
     width: '100%',
-    padding: '0.5rem 0.75rem',
+    padding: '0.75rem',
     border: '1px solid #d1d5db',
-    borderRadius: '0.375rem',
-    outline: 'none'
+    borderRadius: '0.5rem',
+    outline: 'none',
+    fontSize: '1rem'
   };
 
   const labelStyle = {
@@ -437,7 +438,7 @@ const FixedQuantitySystem: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '800px', margin: '0 auto' }}>
       <div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
           📊 Sistema de Cantidad Fija
@@ -447,15 +448,21 @@ const FixedQuantitySystem: React.FC = () => {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-        {/* 入力パラメータ */}
+      {/* Parámetros de Entrada */}
+      <div style={{
+        backgroundColor: 'white',
+        border: '1px solid #e5e7eb',
+        borderRadius: '0.75rem',
+        padding: '1.5rem',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+      }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
             <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
               Parámetros de Entrada
             </h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
               <div>
                 <label style={labelStyle}>Probabilidad aceptable de escasez de stock (%)</label>
                 <input
@@ -493,20 +500,21 @@ const FixedQuantitySystem: React.FC = () => {
             onChange={setConsumption}
           />
 
-          <div style={{ marginTop: '1.5rem' }}>
+          <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
             <button
               onClick={handleAnalyze}
               style={{
-                width: '100%',
+                minWidth: '200px',
+                padding: '0.875rem 2rem',
                 backgroundColor: '#4f46e5',
                 color: 'white',
-                padding: '0.75rem 1.5rem',
                 borderRadius: '0.5rem',
                 border: 'none',
                 fontSize: '1rem',
                 fontWeight: '600',
                 cursor: 'pointer',
-                transition: 'background-color 0.2s'
+                transition: 'all 0.2s',
+                boxShadow: '0 2px 4px rgba(79, 70, 229, 0.3)'
               }}
               onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4338ca'}
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4f46e5'}
@@ -515,18 +523,28 @@ const FixedQuantitySystem: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* 計算結果 */}
-        {showResults && (
+      {/* Resultados del Cálculo */}
+      {showResults && (
+        <div style={{
+          backgroundColor: 'white',
+          border: '1px solid #e5e7eb',
+          borderRadius: '0.75rem',
+          padding: '1.5rem',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          animation: 'fadeIn 0.5s ease-in-out'
+        }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
               <div style={{
                 backgroundColor: '#fef3c7',
                 border: '1px solid #f59e0b',
                 borderRadius: '0.5rem',
-                padding: '1rem'
+                padding: '1.25rem',
+                textAlign: 'center'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{ marginRight: '0.5rem' }}>🛡️</span>
@@ -543,7 +561,8 @@ const FixedQuantitySystem: React.FC = () => {
                 backgroundColor: '#fecaca',
                 border: '1px solid #dc2626',
                 borderRadius: '0.5rem',
-                padding: '1rem'
+                padding: '1.25rem',
+                textAlign: 'center'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{ marginRight: '0.5rem' }}>🎯</span>
@@ -583,8 +602,8 @@ const FixedQuantitySystem: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -623,10 +642,11 @@ const FixedPeriodSystem: React.FC = () => {
 
   const inputStyle = {
     width: '100%',
-    padding: '0.5rem 0.75rem',
+    padding: '0.75rem',
     border: '1px solid #d1d5db',
-    borderRadius: '0.375rem',
-    outline: 'none'
+    borderRadius: '0.5rem',
+    outline: 'none',
+    fontSize: '1rem'
   };
 
   const labelStyle = {
@@ -638,7 +658,7 @@ const FixedPeriodSystem: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '800px', margin: '0 auto' }}>
       <div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
           📅 Sistema de Período Fijo
@@ -648,15 +668,21 @@ const FixedPeriodSystem: React.FC = () => {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-        {/* 入力パラメータ */}
+      {/* Parámetros de Entrada */}
+      <div style={{
+        backgroundColor: 'white',
+        border: '1px solid #e5e7eb',
+        borderRadius: '0.75rem',
+        padding: '1.5rem',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+      }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
             <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
               Parámetros de Entrada
             </h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
               <div>
                 <label style={labelStyle}>Probabilidad aceptable de escasez de stock (%)</label>
                 <input
@@ -667,6 +693,9 @@ const FixedPeriodSystem: React.FC = () => {
                   onChange={(e) => setStockoutProbability(Number(e.target.value))}
                   style={inputStyle}
                 />
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                  Porcentaje de probabilidad de quedarse sin stock
+                </p>
               </div>
 
               <div>
@@ -679,6 +708,9 @@ const FixedPeriodSystem: React.FC = () => {
                   onChange={(e) => setLeadTime(Number(e.target.value))}
                   style={inputStyle}
                 />
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                  Días desde el pedido hasta la recepción
+                </p>
               </div>
 
               <div>
@@ -691,6 +723,9 @@ const FixedPeriodSystem: React.FC = () => {
                   onChange={(e) => setOrderCycle(Number(e.target.value))}
                   style={inputStyle}
                 />
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                  Intervalo de tiempo entre pedidos
+                </p>
               </div>
 
               <div>
@@ -702,6 +737,9 @@ const FixedPeriodSystem: React.FC = () => {
                   onChange={(e) => setCurrentInventory(Number(e.target.value))}
                   style={inputStyle}
                 />
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                  Cantidad actual en inventario
+                </p>
               </div>
             </div>
           </div>
@@ -711,20 +749,21 @@ const FixedPeriodSystem: React.FC = () => {
             onChange={setConsumption}
           />
 
-          <div style={{ marginTop: '1.5rem' }}>
+          <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
             <button
               onClick={handleAnalyze}
               style={{
-                width: '100%',
+                minWidth: '200px',
+                padding: '0.875rem 2rem',
                 backgroundColor: '#4f46e5',
                 color: 'white',
-                padding: '0.75rem 1.5rem',
                 borderRadius: '0.5rem',
                 border: 'none',
                 fontSize: '1rem',
                 fontWeight: '600',
                 cursor: 'pointer',
-                transition: 'background-color 0.2s'
+                transition: 'all 0.2s',
+                boxShadow: '0 2px 4px rgba(79, 70, 229, 0.3)'
               }}
               onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4338ca'}
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4f46e5'}
@@ -733,18 +772,28 @@ const FixedPeriodSystem: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* 計算結果 */}
-        {showResults && (
+      {/* Resultados del Cálculo */}
+      {showResults && (
+        <div style={{
+          backgroundColor: 'white',
+          border: '1px solid #e5e7eb',
+          borderRadius: '0.75rem',
+          padding: '1.5rem',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          animation: 'fadeIn 0.5s ease-in-out'
+        }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
               <div style={{
                 backgroundColor: '#fef3c7',
                 border: '1px solid #f59e0b',
                 borderRadius: '0.5rem',
-                padding: '1rem'
+                padding: '1.25rem',
+                textAlign: 'center'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{ marginRight: '0.5rem' }}>🛡️</span>
@@ -761,7 +810,8 @@ const FixedPeriodSystem: React.FC = () => {
                 backgroundColor: '#dbeafe',
                 border: '1px solid #3b82f6',
                 borderRadius: '0.5rem',
-                padding: '1rem'
+                padding: '1.25rem',
+                textAlign: 'center'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{ marginRight: '0.5rem' }}>📦</span>
@@ -835,8 +885,8 @@ const FixedPeriodSystem: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
