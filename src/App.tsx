@@ -398,6 +398,7 @@ const SystemSelector: React.FC<{
 const FixedQuantitySystem: React.FC = () => {
   const [stockoutProbability, setStockoutProbability] = useState(10);
   const [leadTime, setLeadTime] = useState(3);
+  const [showResults, setShowResults] = useState(false);
   const [consumption, setConsumption] = useState<DailyConsumption>({
     day7: 10,
     day6: 6,
@@ -407,6 +408,10 @@ const FixedQuantitySystem: React.FC = () => {
     day2: 6,
     day1: 7
   });
+
+  const handleAnalyze = () => {
+    setShowResults(true);
+  };
 
   const totalConsumption = Object.values(consumption).reduce((sum, val) => sum + val, 0);
   const averageDailyDemand = totalConsumption / 7;
@@ -487,74 +492,98 @@ const FixedQuantitySystem: React.FC = () => {
             consumption={consumption}
             onChange={setConsumption}
           />
+
+          <div style={{ marginTop: '1.5rem' }}>
+            <button
+              onClick={handleAnalyze}
+              style={{
+                width: '100%',
+                backgroundColor: '#4f46e5',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.5rem',
+                border: 'none',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4338ca'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4f46e5'}
+            >
+              Analizar
+            </button>
+          </div>
         </div>
 
         {/* 計算結果 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{
-              backgroundColor: '#fef3c7',
-              border: '1px solid #f59e0b',
-              borderRadius: '0.5rem',
-              padding: '1rem'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ marginRight: '0.5rem' }}>🛡️</span>
-                <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>Inventario de Seguridad</p>
-                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f' }}>
-                    {Math.round(safetyStock)} unidades
-                  </p>
+        {showResults && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{
+                backgroundColor: '#fef3c7',
+                border: '1px solid #f59e0b',
+                borderRadius: '0.5rem',
+                padding: '1rem'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ marginRight: '0.5rem' }}>🛡️</span>
+                  <div>
+                    <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>Inventario de Seguridad</p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f' }}>
+                      {Math.round(safetyStock)} unidades
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{
+                backgroundColor: '#fecaca',
+                border: '1px solid #dc2626',
+                borderRadius: '0.5rem',
+                padding: '1rem'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ marginRight: '0.5rem' }}>🎯</span>
+                  <div>
+                    <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#991b1b' }}>Punto de Reorden</p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#7f1d1d' }}>
+                      {Math.round(reorderPoint)} unidades
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div style={{
-              backgroundColor: '#fecaca',
-              border: '1px solid #dc2626',
-              borderRadius: '0.5rem',
-              padding: '1rem'
+              backgroundColor: '#f9fafb',
+              padding: '1rem',
+              borderRadius: '0.5rem'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ marginRight: '0.5rem' }}>🎯</span>
-                <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#991b1b' }}>Punto de Reorden</p>
-                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#7f1d1d' }}>
-                    {Math.round(reorderPoint)} unidades
-                  </p>
-                </div>
+              <h4 style={{
+                fontSize: '1rem',
+                fontWeight: '500',
+                color: '#111827',
+                marginBottom: '0.75rem',
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
+                Información Adicional
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
+                <p><strong>Demanda promedio diaria:</strong> {averageDailyDemand.toFixed(1)} unidades</p>
+                <p><strong>Desviación estándar de la demanda:</strong> {standardDeviation.toFixed(1)} unidades</p>
+                <p><strong>Coeficiente de variación:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
+                <p><strong>Z-score (nivel de servicio):</strong> {zScore.toFixed(2)}</p>
+                <p><strong>Nivel de servicio:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
+                <p><strong>Fórmula aplicada:</strong> z × σ × √(tiempo de reposición)</p>
               </div>
             </div>
           </div>
-
-          <div style={{
-            backgroundColor: '#f9fafb',
-            padding: '1rem',
-            borderRadius: '0.5rem'
-          }}>
-            <h4 style={{
-              fontSize: '1rem',
-              fontWeight: '500',
-              color: '#111827',
-              marginBottom: '0.75rem',
-              display: 'flex',
-              alignItems: 'center'
-            }}>
-              <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
-              Información Adicional
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
-              <p><strong>Demanda promedio diaria:</strong> {averageDailyDemand.toFixed(1)} unidades</p>
-              <p><strong>Desviación estándar de la demanda:</strong> {standardDeviation.toFixed(1)} unidades</p>
-              <p><strong>Coeficiente de variación:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
-              <p><strong>Z-score (nivel de servicio):</strong> {zScore.toFixed(2)}</p>
-              <p><strong>Nivel de servicio:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
-              <p><strong>Fórmula aplicada:</strong> z × σ × √(tiempo de reposición)</p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -566,6 +595,7 @@ const FixedPeriodSystem: React.FC = () => {
   const [leadTime, setLeadTime] = useState(3);
   const [orderCycle, setOrderCycle] = useState(7);
   const [currentInventory, setCurrentInventory] = useState(80);
+  const [showResults, setShowResults] = useState(false);
   const [consumption, setConsumption] = useState<DailyConsumption>({
     day7: 35,
     day6: 22,
@@ -575,6 +605,10 @@ const FixedPeriodSystem: React.FC = () => {
     day2: 14,
     day1: 22
   });
+
+  const handleAnalyze = () => {
+    setShowResults(true);
+  };
 
   const totalConsumption = Object.values(consumption).reduce((sum, val) => sum + val, 0);
   const averageDailyDemand = totalConsumption / 7;
@@ -676,108 +710,132 @@ const FixedPeriodSystem: React.FC = () => {
             consumption={consumption}
             onChange={setConsumption}
           />
+
+          <div style={{ marginTop: '1.5rem' }}>
+            <button
+              onClick={handleAnalyze}
+              style={{
+                width: '100%',
+                backgroundColor: '#4f46e5',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.5rem',
+                border: 'none',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4338ca'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4f46e5'}
+            >
+              Analizar
+            </button>
+          </div>
         </div>
 
         {/* 計算結果 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {showResults && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{
+                backgroundColor: '#fef3c7',
+                border: '1px solid #f59e0b',
+                borderRadius: '0.5rem',
+                padding: '1rem'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ marginRight: '0.5rem' }}>🛡️</span>
+                  <div>
+                    <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>Inventario de Seguridad</p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f' }}>
+                      {Math.round(safetyStock)} unidades
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{
+                backgroundColor: '#dbeafe',
+                border: '1px solid #3b82f6',
+                borderRadius: '0.5rem',
+                padding: '1rem'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ marginRight: '0.5rem' }}>📦</span>
+                  <div>
+                    <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#1e40af' }}>Cantidad a Pedir</p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1e3a8a' }}>
+                      {Math.round(orderQuantity)} unidades
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 推奨事項 */}
             <div style={{
-              backgroundColor: '#fef3c7',
-              border: '1px solid #f59e0b',
+              padding: '1rem',
               borderRadius: '0.5rem',
-              padding: '1rem'
+              backgroundColor: orderQuantity > 0 ? '#dcfce7' : '#dbeafe',
+              border: orderQuantity > 0 ? '1px solid #16a34a' : '1px solid #3b82f6'
             }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ marginRight: '0.5rem' }}>🛡️</span>
+                <span style={{ marginRight: '0.5rem' }}>
+                  {orderQuantity > 0 ? '✅' : '⚠️'}
+                </span>
                 <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>Inventario de Seguridad</p>
-                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f' }}>
-                    {Math.round(safetyStock)} unidades
+                  <p style={{
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: orderQuantity > 0 ? '#166534' : '#1e40af'
+                  }}>
+                    Recomendación
+                  </p>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: orderQuantity > 0 ? '#15803d' : '#1d4ed8'
+                  }}>
+                    {orderQuantity > 0 
+                      ? `Realizar pedido de ${Math.round(orderQuantity)} unidades`
+                      : 'No es necesario realizar pedido en este momento'
+                    }
                   </p>
                 </div>
               </div>
             </div>
 
             <div style={{
-              backgroundColor: '#dbeafe',
-              border: '1px solid #3b82f6',
-              borderRadius: '0.5rem',
-              padding: '1rem'
+              backgroundColor: '#f9fafb',
+              padding: '1rem',
+              borderRadius: '0.5rem'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ marginRight: '0.5rem' }}>📦</span>
-                <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#1e40af' }}>Cantidad a Pedir</p>
-                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1e3a8a' }}>
-                    {Math.round(orderQuantity)} unidades
-                  </p>
-                </div>
+              <h4 style={{
+                fontSize: '1rem',
+                fontWeight: '500',
+                color: '#111827',
+                marginBottom: '0.75rem',
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
+                Información Adicional
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
+                <p><strong>Demanda promedio diaria:</strong> {averageDailyDemand.toFixed(1)} unidades</p>
+                <p><strong>Desviación estándar de la demanda:</strong> {standardDeviation.toFixed(1)} unidades</p>
+                <p><strong>Coeficiente de variación:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
+                <p><strong>Período de riesgo:</strong> {riskPeriod} días</p>
+                <p><strong>Demanda esperada (período de riesgo):</strong> {Math.round(expectedDemand)} unidades</p>
+                <p><strong>Nivel objetivo de inventario:</strong> {Math.round(targetLevel)} unidades</p>
+                <p><strong>Nivel de servicio:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
+                <p><strong>Fórmula aplicada:</strong> z × σ × √(ciclo + tiempo de reposición)</p>
               </div>
             </div>
           </div>
-
-          {/* 推奨事項 */}
-          <div style={{
-            padding: '1rem',
-            borderRadius: '0.5rem',
-            backgroundColor: orderQuantity > 0 ? '#dcfce7' : '#dbeafe',
-            border: orderQuantity > 0 ? '1px solid #16a34a' : '1px solid #3b82f6'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ marginRight: '0.5rem' }}>
-                {orderQuantity > 0 ? '✅' : '⚠️'}
-              </span>
-              <div>
-                <p style={{
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  color: orderQuantity > 0 ? '#166534' : '#1e40af'
-                }}>
-                  Recomendación
-                </p>
-                <p style={{
-                  fontSize: '0.875rem',
-                  color: orderQuantity > 0 ? '#15803d' : '#1d4ed8'
-                }}>
-                  {orderQuantity > 0 
-                    ? `Realizar pedido de ${Math.round(orderQuantity)} unidades`
-                    : 'No es necesario realizar pedido en este momento'
-                  }
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div style={{
-            backgroundColor: '#f9fafb',
-            padding: '1rem',
-            borderRadius: '0.5rem'
-          }}>
-            <h4 style={{
-              fontSize: '1rem',
-              fontWeight: '500',
-              color: '#111827',
-              marginBottom: '0.75rem',
-              display: 'flex',
-              alignItems: 'center'
-            }}>
-              <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
-              Información Adicional
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
-              <p><strong>Demanda promedio diaria:</strong> {averageDailyDemand.toFixed(1)} unidades</p>
-              <p><strong>Desviación estándar de la demanda:</strong> {standardDeviation.toFixed(1)} unidades</p>
-              <p><strong>Coeficiente de variación:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
-              <p><strong>Período de riesgo:</strong> {riskPeriod} días</p>
-              <p><strong>Demanda esperada (período de riesgo):</strong> {Math.round(expectedDemand)} unidades</p>
-              <p><strong>Nivel objetivo de inventario:</strong> {Math.round(targetLevel)} unidades</p>
-              <p><strong>Nivel de servicio:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
-              <p><strong>Fórmula aplicada:</strong> z × σ × √(ciclo + tiempo de reposición)</p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
