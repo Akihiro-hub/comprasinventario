@@ -96,13 +96,13 @@ const InventorySimulationChart: React.FC<InventorySimulationChartProps> = ({
               y={reorderPoint} 
               stroke="#dc2626" 
               strokeDasharray="5 5"
-              label={{ value: "発注点", position: "topRight" }}
+              label={{ value: "発注点", position: "insideTopRight" }}
             />
             <ReferenceLine 
               y={safetyStock} 
               stroke="#f59e0b" 
               strokeDasharray="5 5"
-              label={{ value: "安全在庫", position: "topRight" }}
+              label={{ value: "安全在庫", position: "insideTopRight" }}
             />
           </LineChart>
         </ResponsiveContainer>
