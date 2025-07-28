@@ -724,7 +724,7 @@ const FixedPeriodSystem: React.FC = () => {
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                  Intervalo de tiempo entre pedidos
+                  Intervalo de tiempo entre pedidos (tal como cada 7 días)
                 </p>
               </div>
 
