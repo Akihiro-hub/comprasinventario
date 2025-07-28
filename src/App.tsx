@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, BarChart, Bar } from 'recharts';
 
 // 型定義
 interface DailyConsumption {
