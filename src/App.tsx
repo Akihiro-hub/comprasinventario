@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Package, Calendar, Lock, Shield, Target, Info, CheckCircle, AlertCircle } from 'lucide-react';
+import { Lock, Shield, Target, Package, Calendar, Info, CheckCircle, AlertCircle } from 'lucide-react';
 
 // 型定義
 interface DailyConsumption {
@@ -15,6 +15,8 @@ interface DailyConsumption {
 // 計算関数
 function calculateZScore(stockoutProbability: number): number {
   const serviceLevel = (100 - stockoutProbability) / 100;
+  
+  // 正規分布の逆関数の近似計算
   const t = Math.sqrt(-2 * Math.log(1 - serviceLevel));
   const c0 = 2.515517;
   const c1 = 0.802853;
@@ -48,7 +50,7 @@ function calculateSafetyStock(zScore: number, standardDeviation: number, timeHor
   return zScore * standardDeviation * Math.sqrt(timeHorizon);
 }
 
-// ログインフォーム
+// ログインフォームコンポーネント
 const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [attempts, setAttempts] = useState(0);
@@ -133,7 +135,119 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
   );
 };
 
-// システム選択
+// 日次消費入力コンポーネント
+const DailyConsumptionInputs: React.FC<{
+  consumption: DailyConsumption;
+  onChange: (consumption: DailyConsumption) => void;
+}> = ({ consumption, onChange }) => {
+  const handleChange = (field: keyof DailyConsumption, value: number) => {
+    onChange({
+      ...consumption,
+      [field]: value
+    });
+  };
+
+  const totalConsumption = Object.values(consumption).reduce((sum, val) => sum + val, 0);
+  const averageConsumption = totalConsumption / 7;
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">過去7日間の日次消費量</h3>
+        <p className="text-sm text-gray-600 mb-4">各日の消費量を入力してください：</p>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">7日前の消費量</label>
+              <input
+                type="number"
+                min="0"
+                value={consumption.day7}
+                onChange={(e) => handleChange('day7', Number(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">6日前の消費量</label>
+              <input
+                type="number"
+                min="0"
+                value={consumption.day6}
+                onChange={(e) => handleChange('day6', Number(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">5日前の消費量</label>
+              <input
+                type="number"
+                min="0"
+                value={consumption.day5}
+                onChange={(e) => handleChange('day5', Number(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">4日前の消費量</label>
+              <input
+                type="number"
+                min="0"
+                value={consumption.day4}
+                onChange={(e) => handleChange('day4', Number(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">3日前の消費量</label>
+              <input
+                type="number"
+                min="0"
+                value={consumption.day3}
+                onChange={(e) => handleChange('day3', Number(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">2日前の消費量</label>
+              <input
+                type="number"
+                min="0"
+                value={consumption.day2}
+                onChange={(e) => handleChange('day2', Number(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">昨日の消費量</label>
+              <input
+                type="number"
+                min="0"
+                value={consumption.day1}
+                onChange={(e) => handleChange('day1', Number(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-blue-50 p-4 rounded-md">
+        <p className="text-sm text-blue-800">
+          <strong>7日間の合計消費量:</strong> {totalConsumption} 単位
+        </p>
+        <p className="text-sm text-blue-800">
+          <strong>1日平均消費量:</strong> {averageConsumption.toFixed(1)} 単位
+        </p>
+      </div>
+    </div>
+  );
+};
+
+// システム選択コンポーネント
 const SystemSelector: React.FC<{
   selectedSystem: 'fixed-quantity' | 'fixed-period';
   onSystemChange: (system: 'fixed-quantity' | 'fixed-period') => void;
@@ -193,7 +307,7 @@ const SystemSelector: React.FC<{
   );
 };
 
-// 固定数量システム
+// 固定数量システムコンポーネント
 const FixedQuantitySystem: React.FC = () => {
   const [stockoutProbability, setStockoutProbability] = useState(10);
   const [leadTime, setLeadTime] = useState(3);
@@ -222,6 +336,7 @@ const FixedQuantitySystem: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* 入力パラメータ */}
         <div className="space-y-6">
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">入力パラメータ</h3>
@@ -239,6 +354,9 @@ const FixedQuantitySystem: React.FC = () => {
                   onChange={(e) => setStockoutProbability(Number(e.target.value))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  在庫切れを許容する確率のパーセンテージ
+                </p>
               </div>
 
               <div>
@@ -253,101 +371,20 @@ const FixedQuantitySystem: React.FC = () => {
                   onChange={(e) => setLeadTime(Number(e.target.value))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  発注してから商品が到着するまでの日数
+                </p>
               </div>
             </div>
           </div>
 
-          <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">過去7日間の日次消費量</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">7日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day7}
-                    onChange={(e) => setConsumption({...consumption, day7: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">6日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day6}
-                    onChange={(e) => setConsumption({...consumption, day6: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">5日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day5}
-                    onChange={(e) => setConsumption({...consumption, day5: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">4日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day4}
-                    onChange={(e) => setConsumption({...consumption, day4: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">3日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day3}
-                    onChange={(e) => setConsumption({...consumption, day3: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">2日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day2}
-                    onChange={(e) => setConsumption({...consumption, day2: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">昨日</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day1}
-                    onChange={(e) => setConsumption({...consumption, day1: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-4 bg-blue-50 p-4 rounded-md">
-              <p className="text-sm text-blue-800">
-                <strong>7日間の合計消費量:</strong> {totalConsumption} 単位
-              </p>
-              <p className="text-sm text-blue-800">
-                <strong>1日平均消費量:</strong> {averageDailyDemand.toFixed(1)} 単位
-              </p>
-            </div>
-          </div>
+          <DailyConsumptionInputs
+            consumption={consumption}
+            onChange={setConsumption}
+          />
         </div>
 
+        {/* 計算結果 */}
         <div className="space-y-6">
           <h3 className="text-lg font-medium text-gray-900">計算結果</h3>
           
@@ -393,7 +430,7 @@ const FixedQuantitySystem: React.FC = () => {
   );
 };
 
-// 固定期間システム
+// 固定期間システムコンポーネント
 const FixedPeriodSystem: React.FC = () => {
   const [stockoutProbability, setStockoutProbability] = useState(20);
   const [leadTime, setLeadTime] = useState(3);
@@ -413,6 +450,7 @@ const FixedPeriodSystem: React.FC = () => {
   const averageDailyDemand = totalConsumption / 7;
   const standardDeviation = calculateStandardDeviation(consumption);
   const zScore = calculateZScore(stockoutProbability);
+  
   const riskPeriod = orderCycle + leadTime;
   const safetyStock = calculateSafetyStock(zScore, standardDeviation, riskPeriod);
   const expectedDemand = averageDailyDemand * riskPeriod;
@@ -427,6 +465,7 @@ const FixedPeriodSystem: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* 入力パラメータ */}
         <div className="space-y-6">
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">入力パラメータ</h3>
@@ -489,97 +528,13 @@ const FixedPeriodSystem: React.FC = () => {
             </div>
           </div>
 
-          <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">過去7日間の日次消費量</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">7日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day7}
-                    onChange={(e) => setConsumption({...consumption, day7: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">6日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day6}
-                    onChange={(e) => setConsumption({...consumption, day6: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">5日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day5}
-                    onChange={(e) => setConsumption({...consumption, day5: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">4日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day4}
-                    onChange={(e) => setConsumption({...consumption, day4: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">3日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day3}
-                    onChange={(e) => setConsumption({...consumption, day3: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">2日前</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day2}
-                    onChange={(e) => setConsumption({...consumption, day2: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">昨日</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={consumption.day1}
-                    onChange={(e) => setConsumption({...consumption, day1: Number(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-4 bg-blue-50 p-4 rounded-md">
-              <p className="text-sm text-blue-800">
-                <strong>7日間の合計消費量:</strong> {totalConsumption} 単位
-              </p>
-              <p className="text-sm text-blue-800">
-                <strong>1日平均消費量:</strong> {averageDailyDemand.toFixed(1)} 単位
-              </p>
-            </div>
-          </div>
+          <DailyConsumptionInputs
+            consumption={consumption}
+            onChange={setConsumption}
+          />
         </div>
 
+        {/* 計算結果 */}
         <div className="space-y-6">
           <h3 className="text-lg font-medium text-gray-900">計算結果</h3>
           
@@ -605,6 +560,7 @@ const FixedPeriodSystem: React.FC = () => {
             </div>
           </div>
 
+          {/* 推奨事項 */}
           <div className={`p-4 rounded-lg ${orderQuantity > 0 ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'}`}>
             <div className="flex items-center">
               {orderQuantity > 0 ? (
@@ -648,7 +604,7 @@ const FixedPeriodSystem: React.FC = () => {
   );
 };
 
-// メインアプリ
+// メインアプリコンポーネント
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedSystem, setSelectedSystem] = useState<'fixed-quantity' | 'fixed-period'>('fixed-quantity');
@@ -660,11 +616,13 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
+        {/* ヘッダー */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">📦 在庫管理システム</h1>
           <p className="text-gray-600">固定数量システムと固定期間システムによる在庫計算</p>
         </div>
 
+        {/* システム選択 */}
         <div className="mb-8">
           <SystemSelector
             selectedSystem={selectedSystem}
@@ -672,6 +630,7 @@ function App() {
           />
         </div>
 
+        {/* メインコンテンツ */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           {selectedSystem === 'fixed-quantity' ? (
             <FixedQuantitySystem />
@@ -680,6 +639,7 @@ function App() {
           )}
         </div>
 
+        {/* フッター */}
         <div className="mt-8 text-center text-sm text-gray-500">
           <p>📊 統計理論に基づく在庫計算システム</p>
           <p>在庫管理の最適化をサポートします</p>
