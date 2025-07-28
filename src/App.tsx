@@ -56,8 +56,10 @@ const SimpleLineChart: React.FC<{
   safetyStock: number;
   title: string;
 }> = ({ data, reorderPoint, safetyStock, title }) => {
-  const width = 800;
-  const height = 400;
+  // レスポンシブ対応: 画面サイズに応じてサイズを調整
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const width = isMobile ? 350 : 800;
+  const height = isMobile ? 250 : 400;
   const margin = { top: 20, right: 30, bottom: 40, left: 50 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
@@ -72,10 +74,28 @@ const SimpleLineChart: React.FC<{
     `${i === 0 ? 'M' : 'L'} ${xScale(d.day)} ${yScale(d.inventory)}`
   ).join(' ');
 
+  // モバイル用のフォントサイズとラベル調整
+  const fontSize = isMobile ? 8 : 10;
+  const labelFontSize = isMobile ? 10 : 12;
+  const titleFontSize = isMobile ? 12 : 14;
+
   return (
-    <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #e5e7eb' }}>
-      <h4 style={{ fontSize: '1rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>{title}</h4>
-      <svg width={width} height={height} style={{ maxWidth: '100%', height: 'auto' }}>
+    <div style={{ 
+      backgroundColor: 'white', 
+      padding: isMobile ? '0.5rem' : '1rem', 
+      borderRadius: '0.5rem', 
+      border: '1px solid #e5e7eb',
+      overflow: 'hidden'
+    }}>
+      <h4 style={{ 
+        fontSize: isMobile ? '0.875rem' : '1rem', 
+        fontWeight: '500', 
+        color: '#111827', 
+        marginBottom: '1rem',
+        textAlign: 'center'
+      }}>{title}</h4>
+      <div style={{ overflowX: 'auto', overflowY: 'hidden' }}>
+        <svg width={width} height={height} style={{ minWidth: isMobile ? '350px' : 'auto', height: 'auto' }}>
         <g transform={`translate(${margin.left}, ${margin.top})`}>
           {/* Grid lines */}
           {[0, 1, 2, 3, 4, 5].map(i => (
@@ -97,7 +117,7 @@ const SimpleLineChart: React.FC<{
               x={-10}
               y={yScale(maxInventory * i / 5) + 4}
               fill="#64748b"
-              fontSize="10"
+              fontSize={fontSize}
               textAnchor="end"
             >
               {Math.round(maxInventory * i / 5)}
@@ -105,13 +125,13 @@ const SimpleLineChart: React.FC<{
           ))}
           
           {/* X-axis labels */}
-          {[0, 5, 10, 15, 20, 25, 30].map(day => (
+          {(isMobile ? [0, 10, 20, 30] : [0, 5, 10, 15, 20, 25, 30]).map(day => (
             <text
               key={day}
               x={xScale(day)}
               y={chartHeight + 20}
               fill="#64748b"
-              fontSize="10"
+              fontSize={fontSize}
               textAnchor="middle"
             >
               {day}
@@ -132,7 +152,7 @@ const SimpleLineChart: React.FC<{
               key={i}
               cx={xScale(d.day)}
               cy={yScale(d.inventory)}
-              r={2}
+              r={isMobile ? 1.5 : 2}
               fill="#1e40af"
             />
           ))}
@@ -161,32 +181,46 @@ const SimpleLineChart: React.FC<{
           
           {/* Reorder point label with value */}
           <rect
-            x={chartWidth - 180}
+            x={isMobile ? chartWidth - 140 : chartWidth - 180}
             y={yScale(reorderPoint) - 25}
-            width={175}
-            height={20}
+            width={isMobile ? 135 : 175}
+            height={isMobile ? 18 : 20}
             fill="white"
             stroke="#dc2626"
             strokeWidth={1}
             rx={3}
           />
-          <text x={chartWidth - 92} y={yScale(reorderPoint) - 10} fill="#dc2626" fontSize="12" textAnchor="middle" fontWeight="bold">
-            Punto de Reorden: {Math.round(reorderPoint)}
+          <text 
+            x={isMobile ? chartWidth - 72 : chartWidth - 92} 
+            y={yScale(reorderPoint) - 10} 
+            fill="#dc2626" 
+            fontSize={labelFontSize} 
+            textAnchor="middle" 
+            fontWeight="bold"
+          >
+            {isMobile ? `P.Reorden: ${Math.round(reorderPoint)}` : `Punto de Reorden: ${Math.round(reorderPoint)}`}
           </text>
           
           {/* Safety stock label with value */}
           <rect
-            x={chartWidth - 200}
+            x={isMobile ? chartWidth - 150 : chartWidth - 200}
             y={yScale(safetyStock) - 25}
-            width={195}
-            height={20}
+            width={isMobile ? 145 : 195}
+            height={isMobile ? 18 : 20}
             fill="white"
             stroke="#f59e0b"
             strokeWidth={1}
             rx={3}
           />
-          <text x={chartWidth - 102} y={yScale(safetyStock) - 10} fill="#f59e0b" fontSize="12" textAnchor="middle" fontWeight="bold">
-            Inventario de Seguridad: {Math.round(safetyStock)}
+          <text 
+            x={isMobile ? chartWidth - 77 : chartWidth - 102} 
+            y={yScale(safetyStock) - 10} 
+            fill="#f59e0b" 
+            fontSize={labelFontSize} 
+            textAnchor="middle" 
+            fontWeight="bold"
+          >
+            {isMobile ? `Inv.Seguridad: ${Math.round(safetyStock)}` : `Inventario de Seguridad: ${Math.round(safetyStock)}`}
           </text>
           
           {/* Axes */}
@@ -194,19 +228,26 @@ const SimpleLineChart: React.FC<{
           <line x1={0} y1={0} x2={0} y2={chartHeight} stroke="#475569" strokeWidth={2} />
           
           {/* Axis labels */}
-          <text x={chartWidth / 2} y={chartHeight + 35} textAnchor="middle" fontSize="14" fill="#374151" fontWeight="500">
+          <text x={chartWidth / 2} y={chartHeight + 35} textAnchor="middle" fontSize={titleFontSize} fill="#374151" fontWeight="500">
             Días
           </text>
-          <text x={-35} y={chartHeight / 2} textAnchor="middle" fontSize="14" fill="#374151" fontWeight="500" transform={`rotate(-90, -35, ${chartHeight / 2})`}>
-            Unidades en Inventario
+          <text x={-35} y={chartHeight / 2} textAnchor="middle" fontSize={titleFontSize} fill="#374151" fontWeight="500" transform={`rotate(-90, -35, ${chartHeight / 2})`}>
+            {isMobile ? 'Unidades' : 'Unidades en Inventario'}
           </text>
         </g>
       </svg>
-      <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5' }}>
+      </div>
+      <div style={{ 
+        marginTop: '1rem', 
+        fontSize: isMobile ? '0.75rem' : '0.875rem', 
+        color: '#6b7280', 
+        lineHeight: '1.5',
+        textAlign: 'center'
+      }}>
         <p style={{ margin: 0 }}>
           <span style={{ color: '#1e40af', fontWeight: '500' }}>━━━</span> Nivel de Inventario | 
           <span style={{ color: '#dc2626', fontWeight: '500' }}> ┅┅┅</span> Punto de Reorden ({Math.round(reorderPoint)} unidades) | 
-          <span style={{ color: '#f59e0b', fontWeight: '500' }}> ┅┅┅</span> Inventario de Seguridad ({Math.round(safetyStock)} unidades)
+          <span style={{ color: '#f59e0b', fontWeight: '500' }}> ┅┅┅</span> {isMobile ? 'Inv.' : 'Inventario'} de Seguridad ({Math.round(safetyStock)} unidades)
         </p>
       </div>
     </div>
