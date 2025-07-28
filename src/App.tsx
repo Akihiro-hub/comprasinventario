@@ -899,6 +899,36 @@ const FixedPeriodSystem: React.FC = () => {
   const targetLevel = expectedDemand + safetyStock;
   const orderQuantity = Math.max(0, targetLevel - currentInventory);
 
+  // 固定期間システム用の在庫予測データ生成
+  const generateFixedPeriodProjectionData = () => {
+    const totalDays = orderCycle + leadTime + 5;
+    const data = [];
+    let inventory = currentInventory;
+
+    for (let day = 0; day <= totalDays; day++) {
+      // 日次消費（0日目は消費なし）
+      if (day > 0) {
+        inventory -= averageDailyDemand;
+      }
+
+      // 最初の発注の到着（リードタイム + 1日目）
+      if (day === leadTime + 1 && orderQuantity > 0) {
+        inventory += orderQuantity;
+      }
+
+      // 2回目の発注の到着（サイクル + リードタイム + 1日目）
+      if (day === orderCycle + leadTime + 1 && orderQuantity > 0) {
+        inventory += orderQuantity;
+      }
+
+      data.push({
+        day,
+        inventory: Math.max(0, inventory)
+      });
+    }
+
+    return data;
+  };
   const inputStyle = {
     width: '100%',
     padding: '0.75rem',
@@ -1003,6 +1033,18 @@ const FixedPeriodSystem: React.FC = () => {
             </div>
           </div>
 
+          {/* グラフ表示 */}
+          <SimpleLineChart
+            data={generateFixedPeriodProjectionData()}
+            reorderPoint={0} // 固定期間システムでは発注点は使用しない
+            safetyStock={safetyStock}
+            targetLevel={targetLevel}
+            title="Proyección del Inventario - Sistema de Período Fijo"
+            leadTime={leadTime}
+            orderCycle={orderCycle}
+            isFixedPeriod={true}
+          />
+        </>
           <DailyConsumptionInputs
             consumption={consumption}
             onChange={setConsumption}
