@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Lock, Shield, Target, Package, Calendar, Info, CheckCircle, AlertCircle } from 'lucide-react';
 
 // 型定義
 interface DailyConsumption {
@@ -85,19 +84,45 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
-            <Lock className="w-8 h-8 text-indigo-600" />
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem'
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '0.5rem',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        padding: '2rem',
+        width: '100%',
+        maxWidth: '28rem'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div style={{
+            margin: '0 auto',
+            width: '4rem',
+            height: '4rem',
+            backgroundColor: '#e0e7ff',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '1rem'
+          }}>
+            🔒
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">在庫管理システム</h1>
-          <p className="text-gray-600">システムにアクセスするにはパスワードを入力してください</p>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
+            在庫管理システム
+          </h1>
+          <p style={{ color: '#6b7280' }}>システムにアクセスするにはパスワードを入力してください</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="password" style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>
               パスワード
             </label>
             <input
@@ -105,29 +130,53 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              style={{
+                width: '100%',
+                padding: '0.5rem 0.75rem',
+                border: '1px solid #d1d5db',
+                borderRadius: '0.375rem',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                outline: 'none'
+              }}
               placeholder="パスワードを入力"
               disabled={attempts >= maxAttempts}
             />
           </div>
 
           {error && (
-            <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-md">
-              <AlertCircle className="w-5 h-5" />
-              <span className="text-sm">{error}</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: '#dc2626',
+              backgroundColor: '#fef2f2',
+              padding: '0.75rem',
+              borderRadius: '0.375rem'
+            }}>
+              ⚠️
+              <span style={{ fontSize: '0.875rem' }}>{error}</span>
             </div>
           )}
 
           <button
             type="submit"
             disabled={attempts >= maxAttempts}
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            style={{
+              width: '100%',
+              backgroundColor: attempts >= maxAttempts ? '#9ca3af' : '#4f46e5',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.375rem',
+              border: 'none',
+              cursor: attempts >= maxAttempts ? 'not-allowed' : 'pointer',
+              transition: 'background-color 0.2s'
+            }}
           >
             ログイン
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
+        <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
           <p>デモ用パスワード: inventory2024</p>
         </div>
       </div>
@@ -150,96 +199,120 @@ const DailyConsumptionInputs: React.FC<{
   const totalConsumption = Object.values(consumption).reduce((sum, val) => sum + val, 0);
   const averageConsumption = totalConsumption / 7;
 
+  const inputStyle = {
+    width: '100%',
+    padding: '0.5rem 0.75rem',
+    border: '1px solid #d1d5db',
+    borderRadius: '0.375rem',
+    outline: 'none'
+  };
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: '0.25rem'
+  };
+
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">過去7日間の日次消費量</h3>
-        <p className="text-sm text-gray-600 mb-4">各日の消費量を入力してください：</p>
+        <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
+          過去7日間の日次消費量
+        </h3>
+        <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+          各日の消費量を入力してください：
+        </p>
         
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-3">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">7日前の消費量</label>
+              <label style={labelStyle}>7日前の消費量</label>
               <input
                 type="number"
                 min="0"
                 value={consumption.day7}
                 onChange={(e) => handleChange('day7', Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                style={inputStyle}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">6日前の消費量</label>
+              <label style={labelStyle}>6日前の消費量</label>
               <input
                 type="number"
                 min="0"
                 value={consumption.day6}
                 onChange={(e) => handleChange('day6', Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                style={inputStyle}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">5日前の消費量</label>
+              <label style={labelStyle}>5日前の消費量</label>
               <input
                 type="number"
                 min="0"
                 value={consumption.day5}
                 onChange={(e) => handleChange('day5', Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                style={inputStyle}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">4日前の消費量</label>
+              <label style={labelStyle}>4日前の消費量</label>
               <input
                 type="number"
                 min="0"
                 value={consumption.day4}
                 onChange={(e) => handleChange('day4', Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                style={inputStyle}
               />
             </div>
           </div>
           
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">3日前の消費量</label>
+              <label style={labelStyle}>3日前の消費量</label>
               <input
                 type="number"
                 min="0"
                 value={consumption.day3}
                 onChange={(e) => handleChange('day3', Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                style={inputStyle}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">2日前の消費量</label>
+              <label style={labelStyle}>2日前の消費量</label>
               <input
                 type="number"
                 min="0"
                 value={consumption.day2}
                 onChange={(e) => handleChange('day2', Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                style={inputStyle}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">昨日の消費量</label>
+              <label style={labelStyle}>昨日の消費量</label>
               <input
                 type="number"
                 min="0"
                 value={consumption.day1}
                 onChange={(e) => handleChange('day1', Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                style={inputStyle}
               />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-md">
-        <p className="text-sm text-blue-800">
+      <div style={{
+        backgroundColor: '#dbeafe',
+        padding: '1rem',
+        borderRadius: '0.375rem'
+      }}>
+        <p style={{ fontSize: '0.875rem', color: '#1e40af' }}>
           <strong>7日間の合計消費量:</strong> {totalConsumption} 単位
         </p>
-        <p className="text-sm text-blue-800">
+        <p style={{ fontSize: '0.875rem', color: '#1e40af' }}>
           <strong>1日平均消費量:</strong> {averageConsumption.toFixed(1)} 単位
         </p>
       </div>
@@ -253,52 +326,66 @@ const SystemSelector: React.FC<{
   onSystemChange: (system: 'fixed-quantity' | 'fixed-period') => void;
 }> = ({ selectedSystem, onSystemChange }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h2 className="text-lg font-medium text-gray-900 mb-4">管理システムを選択</h2>
+    <div style={{
+      backgroundColor: 'white',
+      borderRadius: '0.5rem',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+      border: '1px solid #e5e7eb',
+      padding: '1.5rem'
+    }}>
+      <h2 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
+        管理システムを選択
+      </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
         <button
           onClick={() => onSystemChange('fixed-quantity')}
-          className={`p-4 rounded-lg border-2 transition-all ${
-            selectedSystem === 'fixed-quantity'
-              ? 'border-indigo-500 bg-indigo-50'
-              : 'border-gray-200 hover:border-gray-300'
-          }`}
+          style={{
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            border: selectedSystem === 'fixed-quantity' ? '2px solid #4f46e5' : '2px solid #e5e7eb',
+            backgroundColor: selectedSystem === 'fixed-quantity' ? '#eef2ff' : 'white',
+            cursor: 'pointer',
+            transition: 'all 0.2s'
+          }}
         >
-          <div className="flex items-center mb-2">
-            <Package className={`w-6 h-6 mr-2 ${
-              selectedSystem === 'fixed-quantity' ? 'text-indigo-600' : 'text-gray-600'
-            }`} />
-            <h3 className={`font-medium ${
-              selectedSystem === 'fixed-quantity' ? 'text-indigo-900' : 'text-gray-900'
-            }`}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <span style={{ marginRight: '0.5rem' }}>📦</span>
+            <h3 style={{
+              fontWeight: '500',
+              color: selectedSystem === 'fixed-quantity' ? '#312e81' : '#111827',
+              margin: 0
+            }}>
               固定数量システム
             </h3>
           </div>
-          <p className="text-sm text-gray-600 text-left">
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', textAlign: 'left', margin: 0 }}>
             固定数量を発注し、間隔は変動します。発注点に基づいて管理します。
           </p>
         </button>
 
         <button
           onClick={() => onSystemChange('fixed-period')}
-          className={`p-4 rounded-lg border-2 transition-all ${
-            selectedSystem === 'fixed-period'
-              ? 'border-indigo-500 bg-indigo-50'
-              : 'border-gray-200 hover:border-gray-300'
-          }`}
+          style={{
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            border: selectedSystem === 'fixed-period' ? '2px solid #4f46e5' : '2px solid #e5e7eb',
+            backgroundColor: selectedSystem === 'fixed-period' ? '#eef2ff' : 'white',
+            cursor: 'pointer',
+            transition: 'all 0.2s'
+          }}
         >
-          <div className="flex items-center mb-2">
-            <Calendar className={`w-6 h-6 mr-2 ${
-              selectedSystem === 'fixed-period' ? 'text-indigo-600' : 'text-gray-600'
-            }`} />
-            <h3 className={`font-medium ${
-              selectedSystem === 'fixed-period' ? 'text-indigo-900' : 'text-gray-900'
-            }`}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <span style={{ marginRight: '0.5rem' }}>📅</span>
+            <h3 style={{
+              fontWeight: '500',
+              color: selectedSystem === 'fixed-period' ? '#312e81' : '#111827',
+              margin: 0
+            }}>
               固定期間システム
             </h3>
           </div>
-          <p className="text-sm text-gray-600 text-left">
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', textAlign: 'left', margin: 0 }}>
             固定間隔で発注し、数量は変動します。目標レベルに基づいて管理します。
           </p>
         </button>
@@ -328,50 +415,68 @@ const FixedQuantitySystem: React.FC = () => {
   const safetyStock = calculateSafetyStock(zScore, standardDeviation, leadTime);
   const reorderPoint = (averageDailyDemand * leadTime) + safetyStock;
 
+  const inputStyle = {
+    width: '100%',
+    padding: '0.5rem 0.75rem',
+    border: '1px solid #d1d5db',
+    borderRadius: '0.375rem',
+    outline: 'none'
+  };
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: '0.5rem'
+  };
+
   return (
-    <div className="space-y-8">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">📊 固定数量システム</h2>
-        <p className="text-gray-600">このシステムは在庫レベルが低くなったときに発注するタイミングを決定します。</p>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
+          📊 固定数量システム
+        </h2>
+        <p style={{ color: '#6b7280' }}>
+          このシステムは在庫レベルが低くなったときに発注するタイミングを決定します。
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
         {/* 入力パラメータ */}
-        <div className="space-y-6">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">入力パラメータ</h3>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
+              入力パラメータ
+            </h3>
             
-            <div className="space-y-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  欠品許容確率 (%)
-                </label>
+                <label style={labelStyle}>欠品許容確率 (%)</label>
                 <input
                   type="number"
                   min="1"
                   max="50"
                   value={stockoutProbability}
                   onChange={(e) => setStockoutProbability(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  style={inputStyle}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
                   在庫切れを許容する確率のパーセンテージ
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  発注後の納期 (日)
-                </label>
+                <label style={labelStyle}>発注後の納期 (日)</label>
                 <input
                   type="number"
                   min="1"
                   max="365"
                   value={leadTime}
                   onChange={(e) => setLeadTime(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  style={inputStyle}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
                   発注してから商品が到着するまでの日数
                 </p>
               </div>
@@ -385,37 +490,62 @@ const FixedQuantitySystem: React.FC = () => {
         </div>
 
         {/* 計算結果 */}
-        <div className="space-y-6">
-          <h3 className="text-lg font-medium text-gray-900">計算結果</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>計算結果</h3>
           
-          <div className="grid grid-cols-1 gap-4">
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-              <div className="flex items-center">
-                <Shield className="w-6 h-6 text-orange-600 mr-2" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{
+              backgroundColor: '#fef3c7',
+              border: '1px solid #f59e0b',
+              borderRadius: '0.5rem',
+              padding: '1rem'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ marginRight: '0.5rem' }}>🛡️</span>
                 <div>
-                  <p className="text-sm font-medium text-orange-800">安全在庫</p>
-                  <p className="text-2xl font-bold text-orange-900">{Math.round(safetyStock)} 単位</p>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>安全在庫</p>
+                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f' }}>
+                    {Math.round(safetyStock)} 単位
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div className="flex items-center">
-                <Target className="w-6 h-6 text-red-600 mr-2" />
+            <div style={{
+              backgroundColor: '#fecaca',
+              border: '1px solid #dc2626',
+              borderRadius: '0.5rem',
+              padding: '1rem'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ marginRight: '0.5rem' }}>🎯</span>
                 <div>
-                  <p className="text-sm font-medium text-red-800">発注点</p>
-                  <p className="text-2xl font-bold text-red-900">{Math.round(reorderPoint)} 単位</p>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#991b1b' }}>発注点</p>
+                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#7f1d1d' }}>
+                    {Math.round(reorderPoint)} 単位
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="text-md font-medium text-gray-900 mb-3 flex items-center">
-              <Info className="w-5 h-5 mr-2" />
+          <div style={{
+            backgroundColor: '#f9fafb',
+            padding: '1rem',
+            borderRadius: '0.5rem'
+          }}>
+            <h4 style={{
+              fontSize: '1rem',
+              fontWeight: '500',
+              color: '#111827',
+              marginBottom: '0.75rem',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
               詳細情報
             </h4>
-            <div className="space-y-2 text-sm text-gray-700">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
               <p><strong>1日平均需要:</strong> {averageDailyDemand.toFixed(1)} 単位</p>
               <p><strong>需要の標準偏差:</strong> {standardDeviation.toFixed(1)} 単位</p>
               <p><strong>変動係数:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
@@ -457,72 +587,86 @@ const FixedPeriodSystem: React.FC = () => {
   const targetLevel = expectedDemand + safetyStock;
   const orderQuantity = Math.max(0, targetLevel - currentInventory);
 
+  const inputStyle = {
+    width: '100%',
+    padding: '0.5rem 0.75rem',
+    border: '1px solid #d1d5db',
+    borderRadius: '0.375rem',
+    outline: 'none'
+  };
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: '0.5rem'
+  };
+
   return (
-    <div className="space-y-8">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">📅 固定期間システム</h2>
-        <p className="text-gray-600">このシステムは定期的な間隔で発注する数量を決定します。</p>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
+          📅 固定期間システム
+        </h2>
+        <p style={{ color: '#6b7280' }}>
+          このシステムは定期的な間隔で発注する数量を決定します。
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
         {/* 入力パラメータ */}
-        <div className="space-y-6">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">入力パラメータ</h3>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
+              入力パラメータ
+            </h3>
             
-            <div className="space-y-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  欠品許容確率 (%)
-                </label>
+                <label style={labelStyle}>欠品許容確率 (%)</label>
                 <input
                   type="number"
                   min="1"
                   max="50"
                   value={stockoutProbability}
                   onChange={(e) => setStockoutProbability(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  style={inputStyle}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  発注後の納期 (日)
-                </label>
+                <label style={labelStyle}>発注後の納期 (日)</label>
                 <input
                   type="number"
                   min="1"
                   max="365"
                   value={leadTime}
                   onChange={(e) => setLeadTime(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  style={inputStyle}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  発注サイクル (日)
-                </label>
+                <label style={labelStyle}>発注サイクル (日)</label>
                 <input
                   type="number"
                   min="1"
                   max="365"
                   value={orderCycle}
                   onChange={(e) => setOrderCycle(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  style={inputStyle}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  現在の在庫量
-                </label>
+                <label style={labelStyle}>現在の在庫量</label>
                 <input
                   type="number"
                   min="0"
                   value={currentInventory}
                   onChange={(e) => setCurrentInventory(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  style={inputStyle}
                 />
               </div>
             </div>
@@ -535,44 +679,68 @@ const FixedPeriodSystem: React.FC = () => {
         </div>
 
         {/* 計算結果 */}
-        <div className="space-y-6">
-          <h3 className="text-lg font-medium text-gray-900">計算結果</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>計算結果</h3>
           
-          <div className="grid grid-cols-1 gap-4">
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-              <div className="flex items-center">
-                <Shield className="w-6 h-6 text-orange-600 mr-2" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{
+              backgroundColor: '#fef3c7',
+              border: '1px solid #f59e0b',
+              borderRadius: '0.5rem',
+              padding: '1rem'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ marginRight: '0.5rem' }}>🛡️</span>
                 <div>
-                  <p className="text-sm font-medium text-orange-800">安全在庫</p>
-                  <p className="text-2xl font-bold text-orange-900">{Math.round(safetyStock)} 単位</p>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>安全在庫</p>
+                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f' }}>
+                    {Math.round(safetyStock)} 単位
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center">
-                <Package className="w-6 h-6 text-blue-600 mr-2" />
+            <div style={{
+              backgroundColor: '#dbeafe',
+              border: '1px solid #3b82f6',
+              borderRadius: '0.5rem',
+              padding: '1rem'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ marginRight: '0.5rem' }}>📦</span>
                 <div>
-                  <p className="text-sm font-medium text-blue-800">発注数量</p>
-                  <p className="text-2xl font-bold text-blue-900">{Math.round(orderQuantity)} 単位</p>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#1e40af' }}>発注数量</p>
+                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1e3a8a' }}>
+                    {Math.round(orderQuantity)} 単位
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* 推奨事項 */}
-          <div className={`p-4 rounded-lg ${orderQuantity > 0 ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'}`}>
-            <div className="flex items-center">
-              {orderQuantity > 0 ? (
-                <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-              ) : (
-                <AlertCircle className="w-5 h-5 text-blue-600 mr-2" />
-              )}
+          <div style={{
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            backgroundColor: orderQuantity > 0 ? '#dcfce7' : '#dbeafe',
+            border: orderQuantity > 0 ? '1px solid #16a34a' : '1px solid #3b82f6'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '0.5rem' }}>
+                {orderQuantity > 0 ? '✅' : '⚠️'}
+              </span>
               <div>
-                <p className={`text-sm font-medium ${orderQuantity > 0 ? 'text-green-800' : 'text-blue-800'}`}>
+                <p style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: orderQuantity > 0 ? '#166534' : '#1e40af'
+                }}>
                   推奨事項
                 </p>
-                <p className={`text-sm ${orderQuantity > 0 ? 'text-green-700' : 'text-blue-700'}`}>
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: orderQuantity > 0 ? '#15803d' : '#1d4ed8'
+                }}>
                   {orderQuantity > 0 
                     ? `${Math.round(orderQuantity)} 単位の発注を推奨します`
                     : '現時点では発注の必要はありません'
@@ -582,12 +750,23 @@ const FixedPeriodSystem: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="text-md font-medium text-gray-900 mb-3 flex items-center">
-              <Info className="w-5 h-5 mr-2" />
+          <div style={{
+            backgroundColor: '#f9fafb',
+            padding: '1rem',
+            borderRadius: '0.5rem'
+          }}>
+            <h4 style={{
+              fontSize: '1rem',
+              fontWeight: '500',
+              color: '#111827',
+              marginBottom: '0.75rem',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
               詳細情報
             </h4>
-            <div className="space-y-2 text-sm text-gray-700">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
               <p><strong>1日平均需要:</strong> {averageDailyDemand.toFixed(1)} 単位</p>
               <p><strong>需要の標準偏差:</strong> {standardDeviation.toFixed(1)} 単位</p>
               <p><strong>変動係数:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
@@ -614,16 +793,20 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
         {/* ヘッダー */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">📦 在庫管理システム</h1>
-          <p className="text-gray-600">固定数量システムと固定期間システムによる在庫計算</p>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
+            📦 在庫管理システム
+          </h1>
+          <p style={{ color: '#6b7280' }}>
+            固定数量システムと固定期間システムによる在庫計算
+          </p>
         </div>
 
         {/* システム選択 */}
-        <div className="mb-8">
+        <div style={{ marginBottom: '2rem' }}>
           <SystemSelector
             selectedSystem={selectedSystem}
             onSystemChange={setSelectedSystem}
@@ -631,7 +814,13 @@ function App() {
         </div>
 
         {/* メインコンテンツ */}
-        <div className="bg-white rounded-lg shadow-sm border p-6">
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '0.5rem',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          border: '1px solid #e5e7eb',
+          padding: '1.5rem'
+        }}>
           {selectedSystem === 'fixed-quantity' ? (
             <FixedQuantitySystem />
           ) : (
@@ -640,7 +829,7 @@ function App() {
         </div>
 
         {/* フッター */}
-        <div className="mt-8 text-center text-sm text-gray-500">
+        <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
           <p>📊 統計理論に基づく在庫計算システム</p>
           <p>在庫管理の最適化をサポートします</p>
         </div>
