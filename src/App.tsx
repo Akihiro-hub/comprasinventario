@@ -78,24 +78,52 @@ const SimpleLineChart: React.FC<{
       <svg width={width} height={height} style={{ maxWidth: '100%', height: 'auto' }}>
         <g transform={`translate(${margin.left}, ${margin.top})`}>
           {/* Grid lines */}
-          {[0, 1, 2, 3, 4].map(i => (
+          {[0, 1, 2, 3, 4, 5].map(i => (
             <line
               key={i}
-              x1={0}
-              y1={yScale(maxInventory * i / 4)}
-              x2={chartWidth}
-              y2={yScale(maxInventory * i / 4)}
-              stroke="#f3f4f6"
+              x1={-5}
+              y1={yScale(maxInventory * i / 5)}
+              x2={chartWidth + 5}
+              y2={yScale(maxInventory * i / 5)}
+              stroke="#f1f5f9"
               strokeWidth={1}
             />
+          ))}
+          
+          {/* Y-axis labels */}
+          {[0, 1, 2, 3, 4, 5].map(i => (
+            <text
+              key={i}
+              x={-10}
+              y={yScale(maxInventory * i / 5) + 4}
+              fill="#64748b"
+              fontSize="10"
+              textAnchor="end"
+            >
+              {Math.round(maxInventory * i / 5)}
+            </text>
+          ))}
+          
+          {/* X-axis labels */}
+          {[0, 5, 10, 15, 20, 25, 30].map(day => (
+            <text
+              key={day}
+              x={xScale(day)}
+              y={chartHeight + 20}
+              fill="#64748b"
+              fontSize="10"
+              textAnchor="middle"
+            >
+              {day}
+            </text>
           ))}
           
           {/* Main line */}
           <path
             d={pathData}
             fill="none"
-            stroke="#2563eb"
-            strokeWidth={2}
+            stroke="#1e40af"
+            strokeWidth={3}
           />
           
           {/* Data points */}
@@ -104,54 +132,83 @@ const SimpleLineChart: React.FC<{
               key={i}
               cx={xScale(d.day)}
               cy={yScale(d.inventory)}
-              r={3}
-              fill="#2563eb"
+              r={2}
+              fill="#1e40af"
             />
           ))}
           
           {/* Reorder point line */}
           <line
-            x1={0}
+            x1={-5}
             y1={yScale(reorderPoint)}
-            x2={chartWidth}
+            x2={chartWidth + 5}
             y2={yScale(reorderPoint)}
             stroke="#dc2626"
-            strokeWidth={2}
+            strokeWidth={3}
             strokeDasharray="5,5"
           />
           
           {/* Safety stock line */}
           <line
-            x1={0}
+            x1={-5}
             y1={yScale(safetyStock)}
-            x2={chartWidth}
+            x2={chartWidth + 5}
             y2={yScale(safetyStock)}
             stroke="#f59e0b"
-            strokeWidth={2}
+            strokeWidth="3"
             strokeDasharray="5,5"
           />
           
-          {/* Labels */}
-          <text x={chartWidth - 10} y={yScale(reorderPoint) - 5} fill="#dc2626" fontSize="12" textAnchor="end">
-            Punto de Reorden
+          {/* Reorder point label with value */}
+          <rect
+            x={chartWidth - 180}
+            y={yScale(reorderPoint) - 25}
+            width={175}
+            height={20}
+            fill="white"
+            stroke="#dc2626"
+            strokeWidth={1}
+            rx={3}
+          />
+          <text x={chartWidth - 92} y={yScale(reorderPoint) - 10} fill="#dc2626" fontSize="12" textAnchor="middle" fontWeight="bold">
+            Punto de Reorden: {Math.round(reorderPoint)}
           </text>
-          <text x={chartWidth - 10} y={yScale(safetyStock) - 5} fill="#f59e0b" fontSize="12" textAnchor="end">
-            Inventario de Seguridad
+          
+          {/* Safety stock label with value */}
+          <rect
+            x={chartWidth - 200}
+            y={yScale(safetyStock) - 25}
+            width={195}
+            height={20}
+            fill="white"
+            stroke="#f59e0b"
+            strokeWidth={1}
+            rx={3}
+          />
+          <text x={chartWidth - 102} y={yScale(safetyStock) - 10} fill="#f59e0b" fontSize="12" textAnchor="middle" fontWeight="bold">
+            Inventario de Seguridad: {Math.round(safetyStock)}
           </text>
           
           {/* Axes */}
-          <line x1={0} y1={chartHeight} x2={chartWidth} y2={chartHeight} stroke="#374151" strokeWidth={1} />
-          <line x1={0} y1={0} x2={0} y2={chartHeight} stroke="#374151" strokeWidth={1} />
+          <line x1={0} y1={chartHeight} x2={chartWidth} y2={chartHeight} stroke="#475569" strokeWidth={2} />
+          <line x1={0} y1={0} x2={0} y2={chartHeight} stroke="#475569" strokeWidth={2} />
           
           {/* Axis labels */}
-          <text x={chartWidth / 2} y={chartHeight + 35} textAnchor="middle" fontSize="12" fill="#6b7280">
+          <text x={chartWidth / 2} y={chartHeight + 35} textAnchor="middle" fontSize="14" fill="#374151" fontWeight="500">
             Días
           </text>
-          <text x={-35} y={chartHeight / 2} textAnchor="middle" fontSize="12" fill="#6b7280" transform={`rotate(-90, -35, ${chartHeight / 2})`}>
+          <text x={-35} y={chartHeight / 2} textAnchor="middle" fontSize="14" fill="#374151" fontWeight="500" transform={`rotate(-90, -35, ${chartHeight / 2})`}>
             Unidades en Inventario
           </text>
         </g>
       </svg>
+      <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5' }}>
+        <p style={{ margin: 0 }}>
+          <span style={{ color: '#1e40af', fontWeight: '500' }}>━━━</span> Nivel de Inventario | 
+          <span style={{ color: '#dc2626', fontWeight: '500' }}> ┅┅┅</span> Punto de Reorden ({Math.round(reorderPoint)} unidades) | 
+          <span style={{ color: '#f59e0b', fontWeight: '500' }}> ┅┅┅</span> Inventario de Seguridad ({Math.round(safetyStock)} unidades)
+        </p>
+      </div>
     </div>
   );
 };
