@@ -143,7 +143,7 @@ const InventoryProjectionChart: React.FC<InventoryProjectionChartProps> = ({
               />
               <Bar 
                 dataKey="value" 
-                fill={(entry) => entry.color}
+                fill="#3b82f6"
                 name="数量"
               />
             </BarChart>
