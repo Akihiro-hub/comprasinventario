@@ -62,7 +62,7 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
     e.preventDefault();
     
     if (attempts >= maxAttempts) {
-      setError('アクセスがブロックされました。しばらく時間をおいてから再試行してください。');
+      setError('Acceso bloqueado. Intenta más tarde.');
       return;
     }
 
@@ -75,9 +75,9 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
       const remaining = maxAttempts - newAttempts;
       
       if (remaining > 0) {
-        setError(`パスワードが間違っています。残り${remaining}回の試行が可能です。`);
+        setError(`Contraseña incorrecta. Te quedan ${remaining} intento(s).`);
       } else {
-        setError('アクセスがブロックされました。しばらく時間をおいてから再試行してください。');
+        setError('Acceso bloqueado. Intenta más tarde.');
       }
     }
     setPassword('');
@@ -115,15 +115,15 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
             🔒
           </div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
-            在庫管理システム
+            Sistema de Gestión de Inventario
           </h1>
-          <p style={{ color: '#6b7280' }}>システムにアクセスするにはパスワードを入力してください</p>
+          <p style={{ color: '#6b7280' }}>Introduce la contraseña para acceder al sistema</p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
             <label htmlFor="password" style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>
-              パスワード
+              Contraseña
             </label>
             <input
               type="password"
@@ -138,7 +138,7 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
                 boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                 outline: 'none'
               }}
-              placeholder="パスワードを入力"
+              placeholder="Introduce la contraseña"
               disabled={attempts >= maxAttempts}
             />
           </div>
@@ -172,12 +172,12 @@ const LoginForm: React.FC<{ onLogin: (success: boolean) => void }> = ({ onLogin 
               transition: 'background-color 0.2s'
             }}
           >
-            ログイン
+            Iniciar sesión
           </button>
         </form>
 
         <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
-          <p>デモ用パスワード: inventory2024</p>
+          <p>Contraseña de demostración: inventory2024</p>
         </div>
       </div>
     </div>
@@ -219,16 +219,16 @@ const DailyConsumptionInputs: React.FC<{
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div>
         <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
-          過去7日間の日次消費量
+          Consumo Diario de los Últimos 7 Días
         </h3>
         <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
-          各日の消費量を入力してください：
+          Ingrese el volumen consumido para cada día:
         </p>
         
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div>
-              <label style={labelStyle}>7日前の消費量</label>
+              <label style={labelStyle}>Volumen consumido hace 7 días</label>
               <input
                 type="number"
                 min="0"
@@ -238,7 +238,7 @@ const DailyConsumptionInputs: React.FC<{
               />
             </div>
             <div>
-              <label style={labelStyle}>6日前の消費量</label>
+              <label style={labelStyle}>Volumen consumido hace 6 días</label>
               <input
                 type="number"
                 min="0"
@@ -248,7 +248,7 @@ const DailyConsumptionInputs: React.FC<{
               />
             </div>
             <div>
-              <label style={labelStyle}>5日前の消費量</label>
+              <label style={labelStyle}>Volumen consumido hace 5 días</label>
               <input
                 type="number"
                 min="0"
@@ -258,7 +258,7 @@ const DailyConsumptionInputs: React.FC<{
               />
             </div>
             <div>
-              <label style={labelStyle}>4日前の消費量</label>
+              <label style={labelStyle}>Volumen consumido hace 4 días</label>
               <input
                 type="number"
                 min="0"
@@ -271,7 +271,7 @@ const DailyConsumptionInputs: React.FC<{
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div>
-              <label style={labelStyle}>3日前の消費量</label>
+              <label style={labelStyle}>Volumen consumido hace 3 días</label>
               <input
                 type="number"
                 min="0"
@@ -281,7 +281,7 @@ const DailyConsumptionInputs: React.FC<{
               />
             </div>
             <div>
-              <label style={labelStyle}>2日前の消費量</label>
+              <label style={labelStyle}>Volumen consumido hace 2 días</label>
               <input
                 type="number"
                 min="0"
@@ -291,7 +291,7 @@ const DailyConsumptionInputs: React.FC<{
               />
             </div>
             <div>
-              <label style={labelStyle}>昨日の消費量</label>
+              <label style={labelStyle}>Volumen consumido ayer</label>
               <input
                 type="number"
                 min="0"
@@ -310,10 +310,10 @@ const DailyConsumptionInputs: React.FC<{
         borderRadius: '0.375rem'
       }}>
         <p style={{ fontSize: '0.875rem', color: '#1e40af' }}>
-          <strong>7日間の合計消費量:</strong> {totalConsumption} 単位
+          <strong>Total consumido en 7 días:</strong> {totalConsumption} unidades
         </p>
         <p style={{ fontSize: '0.875rem', color: '#1e40af' }}>
-          <strong>1日平均消費量:</strong> {averageConsumption.toFixed(1)} 単位
+          <strong>Promedio diario:</strong> {averageConsumption.toFixed(1)} unidades
         </p>
       </div>
     </div>
@@ -334,7 +334,7 @@ const SystemSelector: React.FC<{
       padding: '1.5rem'
     }}>
       <h2 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
-        管理システムを選択
+        Seleccionar Método de Gestión
       </h2>
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -356,11 +356,11 @@ const SystemSelector: React.FC<{
               color: selectedSystem === 'fixed-quantity' ? '#312e81' : '#111827',
               margin: 0
             }}>
-              固定数量システム
+              Sistema de Cantidad Fija
             </h3>
           </div>
           <p style={{ fontSize: '0.875rem', color: '#6b7280', textAlign: 'left', margin: 0 }}>
-            固定数量を発注し、間隔は変動します。発注点に基づいて管理します。
+            Pedidos de cantidad fija con intervalos variables. Basado en punto de reorden.
           </p>
         </button>
 
@@ -382,11 +382,11 @@ const SystemSelector: React.FC<{
               color: selectedSystem === 'fixed-period' ? '#312e81' : '#111827',
               margin: 0
             }}>
-              固定期間システム
+              Sistema de Período Fijo
             </h3>
           </div>
           <p style={{ fontSize: '0.875rem', color: '#6b7280', textAlign: 'left', margin: 0 }}>
-            固定間隔で発注し、数量は変動します。目標レベルに基づいて管理します。
+            Pedidos en intervalos fijos con cantidades variables. Basado en nivel objetivo.
           </p>
         </button>
       </div>
@@ -435,10 +435,10 @@ const FixedQuantitySystem: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
-          📊 固定数量システム
+          📊 Sistema de Cantidad Fija
         </h2>
         <p style={{ color: '#6b7280' }}>
-          このシステムは在庫レベルが低くなったときに発注するタイミングを決定します。
+          Este sistema determina cuándo hacer el pedido según un nivel bajo de inventario.
         </p>
       </div>
 
@@ -447,12 +447,12 @@ const FixedQuantitySystem: React.FC = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
             <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
-              入力パラメータ
+              Parámetros de Entrada
             </h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={labelStyle}>欠品許容確率 (%)</label>
+                <label style={labelStyle}>Probabilidad aceptable de escasez de stock (%)</label>
                 <input
                   type="number"
                   min="1"
@@ -462,12 +462,12 @@ const FixedQuantitySystem: React.FC = () => {
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                  在庫切れを許容する確率のパーセンテージ
+                  Porcentaje de probabilidad de quedarse sin stock que está dispuesto a aceptar
                 </p>
               </div>
 
               <div>
-                <label style={labelStyle}>発注後の納期 (日)</label>
+                <label style={labelStyle}>Plazo de entrega para aprovisionamiento después del pedido (días)</label>
                 <input
                   type="number"
                   min="1"
@@ -477,7 +477,7 @@ const FixedQuantitySystem: React.FC = () => {
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                  発注してから商品が到着するまでの日数
+                  Días que transcurren desde que se hace el pedido hasta que se recibe
                 </p>
               </div>
             </div>
@@ -491,7 +491,7 @@ const FixedQuantitySystem: React.FC = () => {
 
         {/* 計算結果 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>計算結果</h3>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{
@@ -503,9 +503,9 @@ const FixedQuantitySystem: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span style={{ marginRight: '0.5rem' }}>🛡️</span>
                 <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>安全在庫</p>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>Inventario de Seguridad</p>
                   <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f' }}>
-                    {Math.round(safetyStock)} 単位
+                    {Math.round(safetyStock)} unidades
                   </p>
                 </div>
               </div>
@@ -520,9 +520,9 @@ const FixedQuantitySystem: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span style={{ marginRight: '0.5rem' }}>🎯</span>
                 <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#991b1b' }}>発注点</p>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#991b1b' }}>Punto de Reorden</p>
                   <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#7f1d1d' }}>
-                    {Math.round(reorderPoint)} 単位
+                    {Math.round(reorderPoint)} unidades
                   </p>
                 </div>
               </div>
@@ -543,15 +543,15 @@ const FixedQuantitySystem: React.FC = () => {
               alignItems: 'center'
             }}>
               <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
-              詳細情報
+              Información Adicional
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
-              <p><strong>1日平均需要:</strong> {averageDailyDemand.toFixed(1)} 単位</p>
-              <p><strong>需要の標準偏差:</strong> {standardDeviation.toFixed(1)} 単位</p>
-              <p><strong>変動係数:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
-              <p><strong>Z値 (サービスレベル):</strong> {zScore.toFixed(2)}</p>
-              <p><strong>サービスレベル:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
-              <p><strong>適用式:</strong> z × σ × √(納期)</p>
+              <p><strong>Demanda promedio diaria:</strong> {averageDailyDemand.toFixed(1)} unidades</p>
+              <p><strong>Desviación estándar de la demanda:</strong> {standardDeviation.toFixed(1)} unidades</p>
+              <p><strong>Coeficiente de variación:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
+              <p><strong>Z-score (nivel de servicio):</strong> {zScore.toFixed(2)}</p>
+              <p><strong>Nivel de servicio:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
+              <p><strong>Fórmula aplicada:</strong> z × σ × √(tiempo de reposición)</p>
             </div>
           </div>
         </div>
@@ -607,10 +607,10 @@ const FixedPeriodSystem: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
-          📅 固定期間システム
+          📅 Sistema de Período Fijo
         </h2>
         <p style={{ color: '#6b7280' }}>
-          このシステムは定期的な間隔で発注する数量を決定します。
+          Este sistema determina cuánto pedir en intervalos de tiempo regulares.
         </p>
       </div>
 
@@ -619,12 +619,12 @@ const FixedPeriodSystem: React.FC = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
             <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
-              入力パラメータ
+              Parámetros de Entrada
             </h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={labelStyle}>欠品許容確率 (%)</label>
+                <label style={labelStyle}>Probabilidad aceptable de escasez de stock (%)</label>
                 <input
                   type="number"
                   min="1"
@@ -636,7 +636,7 @@ const FixedPeriodSystem: React.FC = () => {
               </div>
 
               <div>
-                <label style={labelStyle}>発注後の納期 (日)</label>
+                <label style={labelStyle}>Plazo de entrega para aprovisionamiento después del pedido (días)</label>
                 <input
                   type="number"
                   min="1"
@@ -648,7 +648,7 @@ const FixedPeriodSystem: React.FC = () => {
               </div>
 
               <div>
-                <label style={labelStyle}>発注サイクル (日)</label>
+                <label style={labelStyle}>Período de ciclo para el sistema de pedidos periódicos (días)</label>
                 <input
                   type="number"
                   min="1"
@@ -660,7 +660,7 @@ const FixedPeriodSystem: React.FC = () => {
               </div>
 
               <div>
-                <label style={labelStyle}>現在の在庫量</label>
+                <label style={labelStyle}>Volumen del inventario que actualmente tenemos al momento de ordenar</label>
                 <input
                   type="number"
                   min="0"
@@ -680,7 +680,7 @@ const FixedPeriodSystem: React.FC = () => {
 
         {/* 計算結果 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>計算結果</h3>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{
@@ -692,9 +692,9 @@ const FixedPeriodSystem: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span style={{ marginRight: '0.5rem' }}>🛡️</span>
                 <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>安全在庫</p>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e' }}>Inventario de Seguridad</p>
                   <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f' }}>
-                    {Math.round(safetyStock)} 単位
+                    {Math.round(safetyStock)} unidades
                   </p>
                 </div>
               </div>
@@ -709,9 +709,9 @@ const FixedPeriodSystem: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span style={{ marginRight: '0.5rem' }}>📦</span>
                 <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#1e40af' }}>発注数量</p>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#1e40af' }}>Cantidad a Pedir</p>
                   <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1e3a8a' }}>
-                    {Math.round(orderQuantity)} 単位
+                    {Math.round(orderQuantity)} unidades
                   </p>
                 </div>
               </div>
@@ -735,15 +735,15 @@ const FixedPeriodSystem: React.FC = () => {
                   fontWeight: '500',
                   color: orderQuantity > 0 ? '#166534' : '#1e40af'
                 }}>
-                  推奨事項
+                  Recomendación
                 </p>
                 <p style={{
                   fontSize: '0.875rem',
                   color: orderQuantity > 0 ? '#15803d' : '#1d4ed8'
                 }}>
                   {orderQuantity > 0 
-                    ? `${Math.round(orderQuantity)} 単位の発注を推奨します`
-                    : '現時点では発注の必要はありません'
+                    ? `Realizar pedido de ${Math.round(orderQuantity)} unidades`
+                    : 'No es necesario realizar pedido en este momento'
                   }
                 </p>
               </div>
@@ -764,17 +764,17 @@ const FixedPeriodSystem: React.FC = () => {
               alignItems: 'center'
             }}>
               <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
-              詳細情報
+              Información Adicional
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
-              <p><strong>1日平均需要:</strong> {averageDailyDemand.toFixed(1)} 単位</p>
-              <p><strong>需要の標準偏差:</strong> {standardDeviation.toFixed(1)} 単位</p>
-              <p><strong>変動係数:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
-              <p><strong>リスク期間:</strong> {riskPeriod} 日</p>
-              <p><strong>期待需要 (リスク期間):</strong> {Math.round(expectedDemand)} 単位</p>
-              <p><strong>目標在庫レベル:</strong> {Math.round(targetLevel)} 単位</p>
-              <p><strong>サービスレベル:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
-              <p><strong>適用式:</strong> z × σ × √(サイクル + 納期)</p>
+              <p><strong>Demanda promedio diaria:</strong> {averageDailyDemand.toFixed(1)} unidades</p>
+              <p><strong>Desviación estándar de la demanda:</strong> {standardDeviation.toFixed(1)} unidades</p>
+              <p><strong>Coeficiente de variación:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
+              <p><strong>Período de riesgo:</strong> {riskPeriod} días</p>
+              <p><strong>Demanda esperada (período de riesgo):</strong> {Math.round(expectedDemand)} unidades</p>
+              <p><strong>Nivel objetivo de inventario:</strong> {Math.round(targetLevel)} unidades</p>
+              <p><strong>Nivel de servicio:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
+              <p><strong>Fórmula aplicada:</strong> z × σ × √(ciclo + tiempo de reposición)</p>
             </div>
           </div>
         </div>
@@ -798,10 +798,10 @@ function App() {
         {/* ヘッダー */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
-            📦 在庫管理システム
+            📦 Sistema de Gestión de Inventario
           </h1>
           <p style={{ color: '#6b7280' }}>
-            固定数量システムと固定期間システムによる在庫計算
+            Cálculo de inventario para sistemas de cantidad fija y período fijo
           </p>
         </div>
 
@@ -830,8 +830,8 @@ function App() {
 
         {/* フッター */}
         <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
-          <p>📊 統計理論に基づく在庫計算システム</p>
-          <p>在庫管理の最適化をサポートします</p>
+          <p>📊 Sistema de cálculo de inventario basado en teoría estadística</p>
+          <p>Desarrollado para gestión de inventario</p>
         </div>
       </div>
     </div>
