@@ -54,8 +54,12 @@ const SimpleLineChart: React.FC<{
   data: Array<{day: number, inventory: number}>;
   reorderPoint: number;
   safetyStock: number;
+  targetLevel?: number;
   title: string;
-}> = ({ data, reorderPoint, safetyStock, title }) => {
+  leadTime?: number;
+  orderCycle?: number;
+  isFixedPeriod?: boolean;
+}> = ({ data, reorderPoint, safetyStock, title, targetLevel, leadTime, orderCycle, isFixedPeriod = false }) => {
   // レスポンシブ対応: 画面サイズに応じてサイズを調整
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const width = isMobile ? 350 : 800;
@@ -64,7 +68,7 @@ const SimpleLineChart: React.FC<{
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  const maxInventory = Math.max(...data.map(d => d.inventory), reorderPoint * 1.2);
+  const maxInventory = Math.max(...data.map(d => d.inventory), (targetLevel || reorderPoint) * 1.2);
   const minInventory = 0;
 
   const xScale = (day: number) => (day / (data.length - 1)) * chartWidth;
@@ -125,16 +129,16 @@ const SimpleLineChart: React.FC<{
           ))}
           
           {/* X-axis labels */}
-          {(isMobile ? [0, 10, 20, 30] : [0, 5, 10, 15, 20, 25, 30]).map(day => (
+          {(isMobile ? [0, Math.floor(data.length/3), Math.floor(2*data.length/3), data.length-1] : [0, Math.floor(data.length/4), Math.floor(data.length/2), Math.floor(3*data.length/4), data.length-1]).map(index => (
             <text
-              key={day}
-              x={xScale(day)}
+              key={index}
+              x={xScale(index)}
               y={chartHeight + 20}
               fill="#64748b"
               fontSize={fontSize}
               textAnchor="middle"
             >
-              {day}
+              {index}
             </text>
           ))}
           
@@ -157,16 +161,89 @@ const SimpleLineChart: React.FC<{
             />
           ))}
           
-          {/* Reorder point line */}
-          <line
-            x1={-5}
-            y1={yScale(reorderPoint)}
-            x2={chartWidth + 5}
-            y2={yScale(reorderPoint)}
-            stroke="#dc2626"
-            strokeWidth={3}
-            strokeDasharray="5,5"
-          />
+          {/* 固定期間システム用の垂直線 */}
+          {isFixedPeriod && leadTime && orderCycle && (
+            <>
+              {/* Primera Llegada */}
+              <line
+                x1={xScale(leadTime + 1)}
+                y1={0}
+                x2={xScale(leadTime + 1)}
+                y2={chartHeight}
+                stroke="#10b981"
+                strokeWidth={2}
+                strokeDasharray="3,3"
+              />
+              
+              {/* Segunda Llegada */}
+              <line
+                x1={xScale(orderCycle + leadTime + 1)}
+                y1={0}
+                x2={xScale(orderCycle + leadTime + 1)}
+                y2={chartHeight}
+                stroke="#3b82f6"
+                strokeWidth={2}
+                strokeDasharray="3,3"
+              />
+              
+              {/* Primera Llegada label */}
+              <rect
+                x={xScale(leadTime + 1) - (isMobile ? 35 : 45)}
+                y={20}
+                width={isMobile ? 70 : 90}
+                height={isMobile ? 16 : 18}
+                fill="white"
+                stroke="#10b981"
+                strokeWidth={1}
+                rx={3}
+              />
+              <text 
+                x={xScale(leadTime + 1)} 
+                y={32} 
+                fill="#10b981" 
+                fontSize={isMobile ? 8 : 10} 
+                textAnchor="middle" 
+                fontWeight="bold"
+              >
+                {isMobile ? 'Primera' : 'Primera Llegada'}
+              </text>
+              
+              {/* Segunda Llegada label */}
+              <rect
+                x={xScale(orderCycle + leadTime + 1) - (isMobile ? 35 : 45)}
+                y={50}
+                width={isMobile ? 70 : 90}
+                height={isMobile ? 16 : 18}
+                fill="white"
+                stroke="#3b82f6"
+                strokeWidth={1}
+                rx={3}
+              />
+              <text 
+                x={xScale(orderCycle + leadTime + 1)} 
+                y={62} 
+                fill="#3b82f6" 
+                fontSize={isMobile ? 8 : 10} 
+                textAnchor="middle" 
+                fontWeight="bold"
+              >
+                {isMobile ? 'Segunda' : 'Segunda Llegada'}
+              </text>
+            </>
+          )}
+          
+          {/* Reorder point line (固定数量システムのみ) */}
+          {!isFixedPeriod && (
+            <line
+              x1={-5}
+              y1={yScale(reorderPoint)}
+              x2={chartWidth + 5}
+              y2={yScale(reorderPoint)}
+              stroke="#dc2626"
+              strokeWidth={3}
+              strokeDasharray="5,5"
+            />
+          )}
           
           {/* Safety stock line */}
           <line
@@ -179,27 +256,31 @@ const SimpleLineChart: React.FC<{
             strokeDasharray="5,5"
           />
           
-          {/* Reorder point label with value */}
-          <rect
-            x={isMobile ? chartWidth - 140 : chartWidth - 180}
-            y={yScale(reorderPoint) - 25}
-            width={isMobile ? 135 : 175}
-            height={isMobile ? 18 : 20}
-            fill="white"
-            stroke="#dc2626"
-            strokeWidth={1}
-            rx={3}
-          />
-          <text 
-            x={isMobile ? chartWidth - 72 : chartWidth - 92} 
-            y={yScale(reorderPoint) - 10} 
-            fill="#dc2626" 
-            fontSize={labelFontSize} 
-            textAnchor="middle" 
-            fontWeight="bold"
-          >
-            {isMobile ? `P.Reorden: ${Math.round(reorderPoint)}` : `Punto de Reorden: ${Math.round(reorderPoint)}`}
-          </text>
+          {/* Reorder point label with value (固定数量システムのみ) */}
+          {!isFixedPeriod && (
+            <>
+              <rect
+                x={isMobile ? chartWidth - 140 : chartWidth - 180}
+                y={yScale(reorderPoint) - 25}
+                width={isMobile ? 135 : 175}
+                height={isMobile ? 18 : 20}
+                fill="white"
+                stroke="#dc2626"
+                strokeWidth={1}
+                rx={3}
+              />
+              <text 
+                x={isMobile ? chartWidth - 72 : chartWidth - 92} 
+                y={yScale(reorderPoint) - 10} 
+                fill="#dc2626" 
+                fontSize={labelFontSize} 
+                textAnchor="middle" 
+                fontWeight="bold"
+              >
+                {isMobile ? `P.Reorden: ${Math.round(reorderPoint)}` : `Punto de Reorden: ${Math.round(reorderPoint)}`}
+              </text>
+            </>
+          )}
           
           {/* Safety stock label with value */}
           <rect
@@ -245,8 +326,20 @@ const SimpleLineChart: React.FC<{
         textAlign: 'center'
       }}>
         <p style={{ margin: 0 }}>
-          <span style={{ color: '#1e40af', fontWeight: '500' }}>━━━</span> Nivel de Inventario | 
-          <span style={{ color: '#dc2626', fontWeight: '500' }}> ┅┅┅</span> Punto de Reorden ({Math.round(reorderPoint)} unidades) | 
+          <span style={{ color: '#1e40af', fontWeight: '500' }}>━━━</span> Nivel de Inventario
+          {isFixedPeriod ? (
+            <>
+              {' | '}
+              <span style={{ color: '#10b981', fontWeight: '500' }}> ┅┅┅</span> Primera Llegada (día {leadTime! + 1}) | 
+              <span style={{ color: '#3b82f6', fontWeight: '500' }}> ┅┅┅</span> Segunda Llegada (día {orderCycle! + leadTime! + 1})
+            </>
+          ) : (
+            <>
+              {' | '}
+              <span style={{ color: '#dc2626', fontWeight: '500' }}> ┅┅┅</span> Punto de Reorden ({Math.round(reorderPoint)} unidades)
+            </>
+          )}
+          {' | '}
           <span style={{ color: '#f59e0b', fontWeight: '500' }}> ┅┅┅</span> {isMobile ? 'Inv.' : 'Inventario'} de Seguridad ({Math.round(safetyStock)} unidades)
         </p>
       </div>
@@ -1033,18 +1126,6 @@ const FixedPeriodSystem: React.FC = () => {
             </div>
           </div>
 
-          {/* グラフ表示 */}
-          <SimpleLineChart
-            data={generateFixedPeriodProjectionData()}
-            reorderPoint={0} // 固定期間システムでは発注点は使用しない
-            safetyStock={safetyStock}
-            targetLevel={targetLevel}
-            title="Proyección del Inventario - Sistema de Período Fijo"
-            leadTime={leadTime}
-            orderCycle={orderCycle}
-            isFixedPeriod={true}
-          />
-        </>
           <DailyConsumptionInputs
             consumption={consumption}
             onChange={setConsumption}
@@ -1077,117 +1158,131 @@ const FixedPeriodSystem: React.FC = () => {
 
       {/* Resultados del Cálculo */}
       {showResults && (
-        <div style={{
-          backgroundColor: 'white',
-          border: '1px solid #e5e7eb',
-          borderRadius: '0.75rem',
-          padding: '1.5rem',
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-        }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+        <>
+          <div style={{
+            backgroundColor: 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '0.75rem',
+            padding: '1.5rem',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827' }}>Resultados del Cálculo</h3>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+                <div style={{
+                  backgroundColor: '#fef3c7',
+                  border: '1px solid #f59e0b',
+                  borderRadius: '0.5rem',
+                  padding: '1.25rem',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ marginRight: '0.5rem', fontSize: '1.5rem' }}>🛡️</span>
+                    <div>
+                      <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e', margin: 0 }}>Inventario de Seguridad</p>
+                      <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f', margin: '0.25rem 0 0 0' }}>
+                        {Math.round(safetyStock)} unidades
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{
+                  backgroundColor: '#dbeafe',
+                  border: '1px solid #3b82f6',
+                  borderRadius: '0.5rem',
+                  padding: '1.25rem',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ marginRight: '0.5rem', fontSize: '1.5rem' }}>📦</span>
+                    <div>
+                      <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#1e40af', margin: 0 }}>Cantidad a Pedir</p>
+                      <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1e3a8a', margin: '0.25rem 0 0 0' }}>
+                        {Math.round(orderQuantity)} unidades
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 推奨事項 */}
               <div style={{
-                backgroundColor: '#fef3c7',
-                border: '1px solid #f59e0b',
+                padding: '1rem',
                 borderRadius: '0.5rem',
-                padding: '1.25rem',
-                textAlign: 'center'
+                backgroundColor: orderQuantity > 0 ? '#dcfce7' : '#dbeafe',
+                border: orderQuantity > 0 ? '1px solid #16a34a' : '1px solid #3b82f6'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ marginRight: '0.5rem', fontSize: '1.5rem' }}>🛡️</span>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ marginRight: '0.5rem', fontSize: '1.25rem' }}>
+                    {orderQuantity > 0 ? '✅' : '⚠️'}
+                  </span>
                   <div>
-                    <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#92400e', margin: 0 }}>Inventario de Seguridad</p>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#78350f', margin: '0.25rem 0 0 0' }}>
-                      {Math.round(safetyStock)} unidades
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: orderQuantity > 0 ? '#166534' : '#1e40af',
+                      margin: 0
+                    }}>
+                      Recomendación
+                    </p>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: orderQuantity > 0 ? '#15803d' : '#1d4ed8',
+                      margin: '0.25rem 0 0 0'
+                    }}>
+                      {orderQuantity > 0 
+                        ? `Realizar pedido de ${Math.round(orderQuantity)} unidades`
+                        : 'No es necesario realizar pedido en este momento'
+                      }
                     </p>
                   </div>
                 </div>
               </div>
 
               <div style={{
-                backgroundColor: '#dbeafe',
-                border: '1px solid #3b82f6',
-                borderRadius: '0.5rem',
-                padding: '1.25rem',
-                textAlign: 'center'
+                backgroundColor: '#f9fafb',
+                padding: '1rem',
+                borderRadius: '0.5rem'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ marginRight: '0.5rem', fontSize: '1.5rem' }}>📦</span>
-                  <div>
-                    <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#1e40af', margin: 0 }}>Cantidad a Pedir</p>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1e3a8a', margin: '0.25rem 0 0 0' }}>
-                      {Math.round(orderQuantity)} unidades
-                    </p>
-                  </div>
+                <h4 style={{
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  color: '#111827',
+                  marginBottom: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                  <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
+                  Información Adicional
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
+                  <p style={{ margin: 0 }}><strong>Demanda promedio diaria:</strong> {averageDailyDemand.toFixed(1)} unidades</p>
+                  <p style={{ margin: 0 }}><strong>Desviación estándar de la demanda:</strong> {standardDeviation.toFixed(1)} unidades</p>
+                  <p style={{ margin: 0 }}><strong>Coeficiente de variación:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
+                  <p style={{ margin: 0 }}><strong>Período de riesgo:</strong> {riskPeriod} días</p>
+                  <p style={{ margin: 0 }}><strong>Demanda esperada (período de riesgo):</strong> {Math.round(expectedDemand)} unidades</p>
+                  <p style={{ margin: 0 }}><strong>Nivel objetivo de inventario:</strong> {Math.round(targetLevel)} unidades</p>
+                  <p style={{ margin: 0 }}><strong>Nivel de servicio:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
+                  <p style={{ margin: 0 }}><strong>Fórmula aplicada:</strong> z × σ × √(ciclo + tiempo de reposición)</p>
                 </div>
-              </div>
-            </div>
-
-            {/* 推奨事項 */}
-            <div style={{
-              padding: '1rem',
-              borderRadius: '0.5rem',
-              backgroundColor: orderQuantity > 0 ? '#dcfce7' : '#dbeafe',
-              border: orderQuantity > 0 ? '1px solid #16a34a' : '1px solid #3b82f6'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ marginRight: '0.5rem', fontSize: '1.25rem' }}>
-                  {orderQuantity > 0 ? '✅' : '⚠️'}
-                </span>
-                <div>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    color: orderQuantity > 0 ? '#166534' : '#1e40af',
-                    margin: 0
-                  }}>
-                    Recomendación
-                  </p>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: orderQuantity > 0 ? '#15803d' : '#1d4ed8',
-                    margin: '0.25rem 0 0 0'
-                  }}>
-                    {orderQuantity > 0 
-                      ? `Realizar pedido de ${Math.round(orderQuantity)} unidades`
-                      : 'No es necesario realizar pedido en este momento'
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div style={{
-              backgroundColor: '#f9fafb',
-              padding: '1rem',
-              borderRadius: '0.5rem'
-            }}>
-              <h4 style={{
-                fontSize: '1rem',
-                fontWeight: '500',
-                color: '#111827',
-                marginBottom: '0.75rem',
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                <span style={{ marginRight: '0.5rem' }}>ℹ️</span>
-                Información Adicional
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#374151' }}>
-                <p style={{ margin: 0 }}><strong>Demanda promedio diaria:</strong> {averageDailyDemand.toFixed(1)} unidades</p>
-                <p style={{ margin: 0 }}><strong>Desviación estándar de la demanda:</strong> {standardDeviation.toFixed(1)} unidades</p>
-                <p style={{ margin: 0 }}><strong>Coeficiente de variación:</strong> {((standardDeviation / averageDailyDemand) * 100).toFixed(1)}%</p>
-                <p style={{ margin: 0 }}><strong>Período de riesgo:</strong> {riskPeriod} días</p>
-                <p style={{ margin: 0 }}><strong>Demanda esperada (período de riesgo):</strong> {Math.round(expectedDemand)} unidades</p>
-                <p style={{ margin: 0 }}><strong>Nivel objetivo de inventario:</strong> {Math.round(targetLevel)} unidades</p>
-                <p style={{ margin: 0 }}><strong>Nivel de servicio:</strong> {(100 - stockoutProbability).toFixed(1)}%</p>
-                <p style={{ margin: 0 }}><strong>Fórmula aplicada:</strong> z × σ × √(ciclo + tiempo de reposición)</p>
               </div>
             </div>
           </div>
-        </div>
+
+          {/* グラフ表示 */}
+          <SimpleLineChart
+            data={generateFixedPeriodProjectionData()}
+            reorderPoint={0}
+            safetyStock={safetyStock}
+            targetLevel={targetLevel}
+            title="Proyección del Inventario - Sistema de Período Fijo"
+            leadTime={leadTime}
+            orderCycle={orderCycle}
+            isFixedPeriod={true}
+          />
+        </>
       )}
     </div>
   );
