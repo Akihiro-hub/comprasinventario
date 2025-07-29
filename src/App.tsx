@@ -521,10 +521,11 @@ const DailyConsumptionInputs: React.FC<{
   const handleChange = (field: keyof DailyConsumption, value: string) => {
     // 空文字列の場合は0、それ以外は数値に変換
     const numericValue = value === '' ? 0 : parseInt(value, 10) || 0;
-    onChange({
+    const newConsumption = {
       ...consumption,
       [field]: numericValue
-    });
+    };
+    onChange(newConsumption);
   };
 
   const totalConsumption = Object.values(consumption).reduce((sum, val) => sum + val, 0);
@@ -745,6 +746,29 @@ const FixedQuantitySystem: React.FC = () => {
     day1: 7
   });
 
+  // 入力値変更時に結果を非表示にする関数
+  const hideResultsOnChange = () => {
+    if (showResults) {
+      setShowResults(false);
+    }
+  };
+
+  // 各入力値の変更ハンドラー
+  const handleStockoutProbabilityChange = (value: string) => {
+    setStockoutProbability(value === '' ? 0 : parseInt(value, 10) || 0);
+    hideResultsOnChange();
+  };
+
+  const handleLeadTimeChange = (value: string) => {
+    setLeadTime(value === '' ? 0 : parseInt(value, 10) || 0);
+    hideResultsOnChange();
+  };
+
+  const handleConsumptionChange = (newConsumption: DailyConsumption) => {
+    setConsumption(newConsumption);
+    hideResultsOnChange();
+  };
+
   const handleAnalyze = () => {
     setShowResults(true);
   };
@@ -846,7 +870,7 @@ const FixedQuantitySystem: React.FC = () => {
                   min="1"
                   max="50"
                   value={stockoutProbability === 0 ? '' : stockoutProbability}
-                  onChange={(e) => setStockoutProbability(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
+                  onChange={(e) => handleStockoutProbabilityChange(e.target.value)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -861,7 +885,7 @@ const FixedQuantitySystem: React.FC = () => {
                   min="1"
                   max="365"
                   value={leadTime === 0 ? '' : leadTime}
-                  onChange={(e) => setLeadTime(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
+                  onChange={(e) => handleLeadTimeChange(e.target.value)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -873,7 +897,7 @@ const FixedQuantitySystem: React.FC = () => {
 
           <DailyConsumptionInputs
             consumption={consumption}
-            onChange={setConsumption}
+            onChange={handleConsumptionChange}
           />
 
           <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
@@ -1010,6 +1034,39 @@ const FixedPeriodSystem: React.FC = () => {
     day1: 22
   });
 
+  // 入力値変更時に結果を非表示にする関数
+  const hideResultsOnChange = () => {
+    if (showResults) {
+      setShowResults(false);
+    }
+  };
+
+  // 各入力値の変更ハンドラー
+  const handleStockoutProbabilityChange = (value: string) => {
+    setStockoutProbability(value === '' ? 0 : parseInt(value, 10) || 0);
+    hideResultsOnChange();
+  };
+
+  const handleLeadTimeChange = (value: string) => {
+    setLeadTime(value === '' ? 0 : parseInt(value, 10) || 0);
+    hideResultsOnChange();
+  };
+
+  const handleOrderCycleChange = (value: string) => {
+    setOrderCycle(value === '' ? 0 : parseInt(value, 10) || 0);
+    hideResultsOnChange();
+  };
+
+  const handleCurrentInventoryChange = (value: string) => {
+    setCurrentInventory(value === '' ? 0 : parseInt(value, 10) || 0);
+    hideResultsOnChange();
+  };
+
+  const handleConsumptionChange = (newConsumption: DailyConsumption) => {
+    setConsumption(newConsumption);
+    hideResultsOnChange();
+  };
+
   const handleAnalyze = () => {
     setShowResults(true);
   };
@@ -1105,7 +1162,7 @@ const FixedPeriodSystem: React.FC = () => {
                   min="1"
                   max="50"
                   value={stockoutProbability === 0 ? '' : stockoutProbability}
-                  onChange={(e) => setStockoutProbability(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
+                  onChange={(e) => handleStockoutProbabilityChange(e.target.value)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -1120,7 +1177,7 @@ const FixedPeriodSystem: React.FC = () => {
                   min="1"
                   max="365"
                   value={leadTime === 0 ? '' : leadTime}
-                  onChange={(e) => setLeadTime(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
+                  onChange={(e) => handleLeadTimeChange(e.target.value)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -1135,7 +1192,7 @@ const FixedPeriodSystem: React.FC = () => {
                   min="1"
                   max="365"
                   value={orderCycle === 0 ? '' : orderCycle}
-                  onChange={(e) => setOrderCycle(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
+                  onChange={(e) => handleOrderCycleChange(e.target.value)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -1149,7 +1206,7 @@ const FixedPeriodSystem: React.FC = () => {
                   type="number"
                   min="0"
                   value={currentInventory === 0 ? '' : currentInventory}
-                  onChange={(e) => setCurrentInventory(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
+                  onChange={(e) => handleCurrentInventoryChange(e.target.value)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -1161,7 +1218,7 @@ const FixedPeriodSystem: React.FC = () => {
 
           <DailyConsumptionInputs
             consumption={consumption}
-            onChange={setConsumption}
+            onChange={handleConsumptionChange}
           />
 
           <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
