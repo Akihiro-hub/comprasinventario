@@ -518,10 +518,12 @@ const DailyConsumptionInputs: React.FC<{
   consumption: DailyConsumption;
   onChange: (consumption: DailyConsumption) => void;
 }> = ({ consumption, onChange }) => {
-  const handleChange = (field: keyof DailyConsumption, value: number) => {
+  const handleChange = (field: keyof DailyConsumption, value: string) => {
+    // 空文字列の場合は0、それ以外は数値に変換
+    const numericValue = value === '' ? 0 : parseInt(value, 10) || 0;
     onChange({
       ...consumption,
-      [field]: value
+      [field]: numericValue
     });
   };
 
@@ -562,8 +564,8 @@ const DailyConsumptionInputs: React.FC<{
               <input
                 type="number"
                 min="0"
-                value={consumption.day7}
-                onChange={(e) => handleChange('day7', Number(e.target.value))}
+                value={consumption.day7 === 0 ? '' : consumption.day7}
+                onChange={(e) => handleChange('day7', e.target.value)}
                 style={inputStyle}
               />
             </div>
@@ -572,8 +574,8 @@ const DailyConsumptionInputs: React.FC<{
               <input
                 type="number"
                 min="0"
-                value={consumption.day6}
-                onChange={(e) => handleChange('day6', Number(e.target.value))}
+                value={consumption.day6 === 0 ? '' : consumption.day6}
+                onChange={(e) => handleChange('day6', e.target.value)}
                 style={inputStyle}
               />
             </div>
@@ -582,8 +584,8 @@ const DailyConsumptionInputs: React.FC<{
               <input
                 type="number"
                 min="0"
-                value={consumption.day5}
-                onChange={(e) => handleChange('day5', Number(e.target.value))}
+                value={consumption.day5 === 0 ? '' : consumption.day5}
+                onChange={(e) => handleChange('day5', e.target.value)}
                 style={inputStyle}
               />
             </div>
@@ -592,8 +594,8 @@ const DailyConsumptionInputs: React.FC<{
               <input
                 type="number"
                 min="0"
-                value={consumption.day4}
-                onChange={(e) => handleChange('day4', Number(e.target.value))}
+                value={consumption.day4 === 0 ? '' : consumption.day4}
+                onChange={(e) => handleChange('day4', e.target.value)}
                 style={inputStyle}
               />
             </div>
@@ -605,8 +607,8 @@ const DailyConsumptionInputs: React.FC<{
               <input
                 type="number"
                 min="0"
-                value={consumption.day3}
-                onChange={(e) => handleChange('day3', Number(e.target.value))}
+                value={consumption.day3 === 0 ? '' : consumption.day3}
+                onChange={(e) => handleChange('day3', e.target.value)}
                 style={inputStyle}
               />
             </div>
@@ -615,8 +617,8 @@ const DailyConsumptionInputs: React.FC<{
               <input
                 type="number"
                 min="0"
-                value={consumption.day2}
-                onChange={(e) => handleChange('day2', Number(e.target.value))}
+                value={consumption.day2 === 0 ? '' : consumption.day2}
+                onChange={(e) => handleChange('day2', e.target.value)}
                 style={inputStyle}
               />
             </div>
@@ -625,8 +627,8 @@ const DailyConsumptionInputs: React.FC<{
               <input
                 type="number"
                 min="0"
-                value={consumption.day1}
-                onChange={(e) => handleChange('day1', Number(e.target.value))}
+                value={consumption.day1 === 0 ? '' : consumption.day1}
+                onChange={(e) => handleChange('day1', e.target.value)}
                 style={inputStyle}
               />
             </div>
@@ -843,8 +845,8 @@ const FixedQuantitySystem: React.FC = () => {
                   type="number"
                   min="1"
                   max="50"
-                  value={stockoutProbability}
-                  onChange={(e) => setStockoutProbability(Number(e.target.value))}
+                  value={stockoutProbability === 0 ? '' : stockoutProbability}
+                  onChange={(e) => setStockoutProbability(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -858,8 +860,8 @@ const FixedQuantitySystem: React.FC = () => {
                   type="number"
                   min="1"
                   max="365"
-                  value={leadTime}
-                  onChange={(e) => setLeadTime(Number(e.target.value))}
+                  value={leadTime === 0 ? '' : leadTime}
+                  onChange={(e) => setLeadTime(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -1102,8 +1104,8 @@ const FixedPeriodSystem: React.FC = () => {
                   type="number"
                   min="1"
                   max="50"
-                  value={stockoutProbability}
-                  onChange={(e) => setStockoutProbability(Number(e.target.value))}
+                  value={stockoutProbability === 0 ? '' : stockoutProbability}
+                  onChange={(e) => setStockoutProbability(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -1117,8 +1119,8 @@ const FixedPeriodSystem: React.FC = () => {
                   type="number"
                   min="1"
                   max="365"
-                  value={leadTime}
-                  onChange={(e) => setLeadTime(Number(e.target.value))}
+                  value={leadTime === 0 ? '' : leadTime}
+                  onChange={(e) => setLeadTime(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -1132,8 +1134,8 @@ const FixedPeriodSystem: React.FC = () => {
                   type="number"
                   min="1"
                   max="365"
-                  value={orderCycle}
-                  onChange={(e) => setOrderCycle(Number(e.target.value))}
+                  value={orderCycle === 0 ? '' : orderCycle}
+                  onChange={(e) => setOrderCycle(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
@@ -1146,8 +1148,8 @@ const FixedPeriodSystem: React.FC = () => {
                 <input
                   type="number"
                   min="0"
-                  value={currentInventory}
-                  onChange={(e) => setCurrentInventory(Number(e.target.value))}
+                  value={currentInventory === 0 ? '' : currentInventory}
+                  onChange={(e) => setCurrentInventory(e.target.value === '' ? 0 : parseInt(e.target.value, 10) || 0)}
                   style={inputStyle}
                 />
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
